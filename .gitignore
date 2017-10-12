@@ -1,0 +1,9 @@
+/Binaries
+/Intermediate
+/Saved
+*.swp
+*.VC.db
+*.sln
+*.suo
+*.opendb
+.vs
