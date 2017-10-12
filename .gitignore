@@ -1,6 +1,7 @@
 /Binaries
 /Intermediate
 /Saved
+/Content/StarterContent
 *.swp
 *.VC.db
 *.sln
