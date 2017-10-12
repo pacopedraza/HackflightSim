@@ -68,7 +68,7 @@ should create a file <b>HackflightSim.sln</b> and some new folders.
 If you don't get the new .sln file, it's probably because UE4 cannot find a C++ compiler for
 the version of Visual Studio you've installed (see discussion 
 [here](https://docs.unrealengine.com/latest/INT/Programming/Development/VisualStudioSetup/#beforesetting-upyourue4-to-vsworkflow)).  Double-clicking on the .sln file should launch Visual Studio.  The first time you
-launch Visual Studio, it can take several minutes to parseup all the C++ source
+launch Visual Studio, it can take several minutes to pars eup all the C++ source
 code for the UE4 engine.
 
 After VisualStudio has launched, make sure you have a Solution Explorer window
