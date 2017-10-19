@@ -35,7 +35,8 @@ for the minimum requirements recommended by Unreal Engine.
 You will also need some sort of game controller. Because HackflightSim is meant to simulate flying an
 actual micro quadcopter, we do not support flying by keyboard. We are currently supporting the following
 controllers:
-* FrSky Taranis TX9 RC transmitter with mini USB cable (our preferred controller)
+* FrSky Taranis TX9 RC transmitter with mini USB cable 
+* Spektrum transmitter with WS1000 wireless simulator dongle
 * XBox 360 controller
 * PS3 controller
 * Logitech Extreme Pro 3D joystick
