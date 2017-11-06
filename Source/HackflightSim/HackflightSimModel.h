@@ -31,12 +31,12 @@ namespace hf {
 		SimModel(void) {
 
 			// Level (accelerometer): set to zero for rate mode
-			levelP = 0.10f;
+			levelP = 0;// 0.10f;
 
 			// Rate (gyro): P must be positive
-			ratePitchrollP = .00001f;// 0.125f;
-			ratePitchrollI = 0;// 0.05f;
-			ratePitchrollD = 0;// 0.01f;
+			ratePitchRollP = .00001f;// 0.125f;
+			ratePitchRollI = 0;// 0.05f;
+			ratePitchRollD = 0;// 0.01f;
 
 			// Yaw: P must be positive
 			yawP = 0.0001f;// 0.1f;

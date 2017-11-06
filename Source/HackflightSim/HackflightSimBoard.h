@@ -50,17 +50,15 @@ namespace hf {
 			return true;
 		}
 
-		void getImu(float eulerAnglesRadians[3], int16_t gyroRaw[3])
+		void getImu(float eulerAnglesRadians[3], float gyroRadiansPerSecond[3])
 		{
 			eulerAnglesRadians[0] = angles[0];
 			eulerAnglesRadians[1] = angles[1];
 			eulerAnglesRadians[2] = angles[2];
 
-            // Scale gyro to +/-4096
-            static const float GYROSCALE = 60;
-            gyroRaw[0] =  (int16_t)(GYROSCALE * gyro[0]);
-            gyroRaw[1] = -(int16_t)(GYROSCALE * gyro[1]);
-            gyroRaw[2] = -(int16_t)(GYROSCALE * gyro[2]);
+            gyroRadiansPerSecond[0] =  gyro[0];
+            gyroRadiansPerSecond[1] = -gyro[1];
+            gyroRadiansPerSecond[2] = -gyro[2];
         }
 
         uint64_t getMicros()
