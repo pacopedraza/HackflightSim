@@ -22,7 +22,7 @@ along with HackflightSim.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <board.hpp>
 
-// Need to include windows.h to declar OutputDebugStringA(), but causes compiler warnings,
+// Need to include windows.h to declare OutputDebugStringA(), but causes compiler warnings,
 // so we wrap this one include in a no-warnings pragma.
 // See: https://stackoverflow.com/questions/4001736/whats-up-with-the-thousands-of-warnings-in-standard-headers-in-msvc-wall
 #pragma warning(push, 0)       
@@ -118,7 +118,7 @@ namespace hf {
  
 		void update(float rollSpeed, float pitchSpeed, float yawSpeed, float verticalPositionMeters, float deltaSeconds)
 		{
-			dprintf("GroundAlt: %+2.2f\n", verticalPositionMeters);
+			dprintf("%+2.f\n", rollSpeed);
 
 			// Track time
 			micros += 1e6 * deltaSeconds;

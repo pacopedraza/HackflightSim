@@ -81,15 +81,15 @@ private:
     float collidingSeconds;
 
 	/*** Gravitational constant */
-	static constexpr float GRAVITY = 9.8;
+	static constexpr float GRAVITY = 9.80665;
 
-	/** Translational speed in centimeters per second */
-	float forwardSpeedCmPerSec;
-	float lateralSpeedCmPerSec;
-	float verticalSpeedCmPerSec;
+	/** Translational speed in meters per second */
+	float forwardSpeed;
+	float lateralSpeed;
+	float verticalSpeed;
 
-	/** Vertical position in centimeters */
-	float verticalPositionCm;
+	/** Vertical position in meters */
+	float verticalPosition;
 
 	/** Motor thrusts to angular velocity in body frame: (a+b) - (c+d) */
 	float motorsToAngularVelocity(int a, int b, int c, int d);
