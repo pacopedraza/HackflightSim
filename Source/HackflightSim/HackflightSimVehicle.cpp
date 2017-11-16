@@ -190,16 +190,13 @@ void AHackflightSimVehicle::Tick(float deltaSeconds)
     }
 
     // Compute current translation movement
-    const FVector LocalMove = FVector(
-            100*forwardSpeed*deltaSeconds, 
-            100*lateralSpeed*deltaSeconds, 
-            100*verticalSpeed*deltaSeconds); 
+    const FVector LocalMove = FVector(forwardSpeed*deltaSeconds, lateralSpeed*deltaSeconds, verticalSpeed*deltaSeconds); 
 
 	// Integrate vertical speed to get verticalPosition
 	verticalPosition += verticalSpeed * deltaSeconds;
 
-    // Move copter (with sweep so we stop when we collide with things)
-    AddActorLocalOffset(LocalMove, true);
+    // Move copter (UE4 uses cm, so multiply by 100 first)
+    AddActorLocalOffset(100*LocalMove, true);
 
     // Rotate props
     for (int k=0; k<4; ++k)
