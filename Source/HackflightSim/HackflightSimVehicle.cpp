@@ -98,10 +98,10 @@ AHackflightSimVehicle::AHackflightSimVehicle()
 	motors[2] = new HackflightSimMotor(this, VehicleMesh, PARAM_MOTOR_REAR_X, PARAM_MOTOR_LEFT_Y,   -1, 2);
 	motors[3] = new HackflightSimMotor(this, VehicleMesh, PARAM_MOTOR_FRONT_X, PARAM_MOTOR_LEFT_Y,  +1, 3);
 
-	// Set initial conditions position, velocitiy
-	CurrentForwardSpeed = 0;
-	CurrentLateralSpeed = 0;
-	CurrentVerticalSpeed = 0;
+	// Set initial velocities
+	CurrentForwardSpeedCmPerSec = 0;
+	CurrentLateralSpeedCmPerSec = 0;
+	CurrentVerticalSpeedCmPerSec = 0;
 
 	// Create new SimBoard object
 	board = new hf::SimBoard();
@@ -117,21 +117,21 @@ void AHackflightSimVehicle::update(float DeltaSeconds)
     hackflight.update();
 
     // Compute body-frame roll, pitch, yaw velocities based on differences between motors
-    float CurrentRollSpeed  = motorsToAngularVelocity(2, 3, 0, 1);
-    float CurrentPitchSpeed = motorsToAngularVelocity(1, 3, 0, 2); 
-    float CurrentYawSpeed   = motorsToAngularVelocity(1, 2, 0, 3); 
+    float CurrentRollSpeedCmPerSec  = motorsToAngularVelocity(2, 3, 0, 1);
+    float CurrentPitchSpeedCmPerSec = motorsToAngularVelocity(1, 3, 0, 2); 
+    float CurrentYawSpeedCmPerSec   = motorsToAngularVelocity(1, 2, 0, 3); 
 
     // Calculate change in rotation this frame
     FRotator DeltaRotation(0, 0, 0);
-    DeltaRotation.Pitch = CurrentPitchSpeed * DeltaSeconds;
-    DeltaRotation.Yaw   = CurrentYawSpeed   * DeltaSeconds;
-    DeltaRotation.Roll  = CurrentRollSpeed  * DeltaSeconds;
+    DeltaRotation.Pitch = CurrentPitchSpeedCmPerSec * DeltaSeconds;
+    DeltaRotation.Yaw   = CurrentYawSpeedCmPerSec   * DeltaSeconds;
+    DeltaRotation.Roll  = CurrentRollSpeedCmPerSec  * DeltaSeconds;
 
     // Rotate copter in simulation
     AddActorLocalRotation(DeltaRotation);
 
     // Send current rotational values to board, so firmware can compute PIDs
-    board->update(CurrentRollSpeed, CurrentPitchSpeed, CurrentYawSpeed, DeltaSeconds);
+    board->update(CurrentRollSpeedCmPerSec, CurrentPitchSpeedCmPerSec, CurrentYawSpeedCmPerSec, CurrentVerticalSpeedCmPerSec, DeltaSeconds);
 
     // Overall thrust vector, scaled by arbitrary constant for realism
     float thrust = PARAM_THRUST_SCALE * (board->motors[0] + board->motors[1] + board->motors[2] + board->motors[3]);
@@ -152,14 +152,14 @@ void AHackflightSimVehicle::update(float DeltaSeconds)
 		float r12 = sin(psi)*sin(theta) - cos(psi)*cos(theta)*sin(phi);
 		float r22 = cos(phi)*cos(theta);
 
-		// Overall vertical force = thrust - gravity; multiply by 100 to get m/s; integrate to get vertical speed.
+		// Overall vertical force = thrust - gravity; multiply by 100 to get cm/s; integrate to get vertical speed.
         // We first multiply by the sign of the vertical world coordinate direction, because AddActorLocalOffset()
         // will upside-down vehicle rise on negative velocity.
-		CurrentVerticalSpeed += (r22<0?-1:+1) * ((r22*thrust - GRAVITY) * 100 * DeltaSeconds);
+		CurrentVerticalSpeedCmPerSec += (r22<0?-1:+1) * ((r22*thrust - GRAVITY) * 100 * DeltaSeconds);
 
 		// To get forward and lateral speeds, integrate thrust along world coordinates
-		CurrentLateralSpeed -= thrust * PARAM_VELOCITY_TRANSLATE_SCALE * r12;
-		CurrentForwardSpeed += thrust * PARAM_VELOCITY_TRANSLATE_SCALE * r02;
+		CurrentLateralSpeedCmPerSec -= thrust * PARAM_VELOCITY_TRANSLATE_SCALE * r12;
+		CurrentForwardSpeedCmPerSec += thrust * PARAM_VELOCITY_TRANSLATE_SCALE * r02;
 	}
 }
 
@@ -188,9 +188,9 @@ void AHackflightSimVehicle::Tick(float DeltaSeconds)
 
     // Compute current translation movement
     const FVector LocalMove = FVector(
-            CurrentForwardSpeed*DeltaSeconds, 
-            CurrentLateralSpeed*DeltaSeconds, 
-            CurrentVerticalSpeed*DeltaSeconds); 
+            CurrentForwardSpeedCmPerSec*DeltaSeconds, 
+            CurrentLateralSpeedCmPerSec*DeltaSeconds, 
+            CurrentVerticalSpeedCmPerSec*DeltaSeconds); 
 
     // Move copter (with sweep so we stop when we collide with things)
     AddActorLocalOffset(LocalMove, true);
@@ -217,9 +217,9 @@ void AHackflightSimVehicle::NotifyHit(
     Super::NotifyHit(MyComp, Other, OtherComp, bSelfMoved, HitLocation, HitNormal, NormalImpulse, Hit);
 
     // Set movement trajectory to inverse of current trajectory
-    CurrentForwardSpeed  *= -PARAM_COLLISION_BOUNCEBACK;
-    CurrentLateralSpeed  *= -PARAM_COLLISION_BOUNCEBACK;
-    CurrentVerticalSpeed *= -PARAM_COLLISION_BOUNCEBACK;;
+    CurrentForwardSpeedCmPerSec  *= -PARAM_COLLISION_BOUNCEBACK;
+    CurrentLateralSpeedCmPerSec  *= -PARAM_COLLISION_BOUNCEBACK;
+    CurrentVerticalSpeedCmPerSec *= -PARAM_COLLISION_BOUNCEBACK;;
 
     // Start collision countdown
     collidingSeconds = PARAM_COLLISION_SECONDS;

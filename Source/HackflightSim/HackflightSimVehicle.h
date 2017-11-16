@@ -83,10 +83,10 @@ private:
 	/*** Gravitational constant */
 	static constexpr float GRAVITY = 9.8;
 
-	/** Translational speed */
-	float CurrentForwardSpeed;
-	float CurrentLateralSpeed;
-	float CurrentVerticalSpeed;
+	/** Translational speed in centimeters per second */
+	float CurrentForwardSpeedCmPerSec;
+	float CurrentLateralSpeedCmPerSec;
+	float CurrentVerticalSpeedCmPerSec;
 
 	/** Motor thrusts to angular velocity in body frame: (a+b) - (c+d) */
 	float motorsToAngularVelocity(int a, int b, int c, int d);

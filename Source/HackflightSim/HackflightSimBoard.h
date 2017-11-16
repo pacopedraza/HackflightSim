@@ -35,6 +35,8 @@ namespace hf {
 
 	class SimBoard : public Board {
 
+		// These methods are called by Hackflight
+
 		void init(Config& config)
 		{
 			// Loop timing overrides
@@ -43,6 +45,9 @@ namespace hf {
 			angles[0] = 0;
 			angles[1] = 0;
 			angles[2] = 0;
+
+			// Start at "sea level"
+			verticalPositionMeters = 0;
 		}
 
 		bool skipArming(void)
@@ -71,20 +76,53 @@ namespace hf {
 			motors[index] = value;
 		}
 
-
 		void delayMilliseconds(uint32_t msec)
 		{
 		}
+
+		virtual bool extrasHaveBaro(void)
+		{
+			return true;
+		}
+
+		virtual float extrasGetBaroPressure(void)
+		{
+			// Convert vehicle's Z coordinate in meters to barometric pressure in Pascals (millibars)
+			// At low altitudes above the sea level, the pressure decreases by about 1200 Pa for every 100 meters
+			// (See https://en.wikipedia.org/wiki/Atmospheric_pressure#Altitude_variation)
+			return 1000 * (101.325 - 1.2 * verticalPositionMeters / 100);
+		}
+
+		virtual void extrasImuGetAccel(float accelGs[3])
+		{
+			for (uint8_t k = 0; k<3; ++k) {
+				accelGs[k] = 1.f; // XXX
+			}
+		}
+
+		void dprintf(const char * fmt, ...)
+		{
+			va_list ap;
+			va_start(ap, fmt);
+			char buf[200];
+			vsprintf_s(buf, fmt, ap);
+			OutputDebugStringA(buf);
+			va_end(ap);
+		}
+
 
 	private:
 
 		uint64_t micros;
         float gyro[3];
         float anglesPrev[3];
+		float verticalPositionMeters;
 
 	public:
 
-		void update(float CurrentRollSpeed, float CurrentPitchSpeed, float CurrentYawSpeed, float DeltaSeconds)
+		// This method and variables are shared with HackflightSimVehicle
+ 
+		void update(float CurrentRollSpeed, float CurrentPitchSpeed, float CurrentYawSpeed, float CurrentVerticalSpeedCmPerSec, float DeltaSeconds)
 		{
 			// Track time
 			micros += 1e6 * DeltaSeconds;
@@ -94,21 +132,16 @@ namespace hf {
 			angles[1] -= CurrentPitchSpeed * DeltaSeconds;
 			angles[2] += CurrentYawSpeed   * DeltaSeconds;
 
+			// Integrate vertical speed to get verticalPosition
+			verticalPositionMeters += CurrentVerticalSpeedCmPerSec/100 * DeltaSeconds;
+
+			dprintf("%+2.2f\n", verticalPositionMeters);
+
             // Compute pitch, roll, yaw first derivative to simulate gyro
             for (int k=0; k<3; ++k) {
                 gyro[k] = (angles[k] - anglesPrev[k]) / DeltaSeconds;
                 anglesPrev[k] = angles[k];
             }
-        }
-
-        void dprintf(const char * fmt, ...)
-        {
-            va_list ap;
-            va_start(ap, fmt);
-            char buf[200];
-            vsprintf_s(buf, fmt, ap);
-            OutputDebugStringA(buf);
-            va_end(ap);
         }
 
 		// These are shared with HackflightSimVehicle
