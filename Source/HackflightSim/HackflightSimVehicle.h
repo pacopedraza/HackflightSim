@@ -84,9 +84,12 @@ private:
 	static constexpr float GRAVITY = 9.8;
 
 	/** Translational speed in centimeters per second */
-	float CurrentForwardSpeedCmPerSec;
-	float CurrentLateralSpeedCmPerSec;
-	float CurrentVerticalSpeedCmPerSec;
+	float forwardSpeedCmPerSec;
+	float lateralSpeedCmPerSec;
+	float verticalSpeedCmPerSec;
+
+	/** Vertical position in centimeters */
+	float verticalPositionCm;
 
 	/** Motor thrusts to angular velocity in body frame: (a+b) - (c+d) */
 	float motorsToAngularVelocity(int a, int b, int c, int d);

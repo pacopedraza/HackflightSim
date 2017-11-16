@@ -45,9 +45,6 @@ namespace hf {
 			angles[0] = 0;
 			angles[1] = 0;
 			angles[2] = 0;
-
-			// Start at "sea level"
-			verticalPositionMeters = 0;
 		}
 
 		bool skipArming(void)
@@ -87,10 +84,7 @@ namespace hf {
 
 		virtual float extrasGetBaroPressure(void)
 		{
-			// Convert vehicle's Z coordinate in meters to barometric pressure in Pascals (millibars)
-			// At low altitudes above the sea level, the pressure decreases by about 1200 Pa for every 100 meters
-			// (See https://en.wikipedia.org/wiki/Atmospheric_pressure#Altitude_variation)
-			return 1000 * (101.325 - 1.2 * verticalPositionMeters / 100);
+			return baroPressurePascals;
 		}
 
 		virtual void extrasImuGetAccel(float accelGs[3])
@@ -116,33 +110,35 @@ namespace hf {
 		uint64_t micros;
         float gyro[3];
         float anglesPrev[3];
-		float verticalPositionMeters;
+		float baroPressurePascals;
 
 	public:
 
 		// This method and variables are shared with HackflightSimVehicle
  
-		void update(float CurrentRollSpeed, float CurrentPitchSpeed, float CurrentYawSpeed, float CurrentVerticalSpeedCmPerSec, float DeltaSeconds)
+		void update(float rollSpeed, float pitchSpeed, float yawSpeed, float verticalPositionMeters, float deltaSeconds)
 		{
+			dprintf("GroundAlt: %+2.2f\n", verticalPositionMeters);
+
 			// Track time
-			micros += 1e6 * DeltaSeconds;
+			micros += 1e6 * deltaSeconds;
 
 			// Integrate Euler angle velocities to get Euler angles
-			angles[0] += CurrentRollSpeed  * DeltaSeconds;
-			angles[1] -= CurrentPitchSpeed * DeltaSeconds;
-			angles[2] += CurrentYawSpeed   * DeltaSeconds;
-
-			// Integrate vertical speed to get verticalPosition
-			verticalPositionMeters += CurrentVerticalSpeedCmPerSec/100 * DeltaSeconds;
-
-			dprintf("%+2.2f\n", verticalPositionMeters);
+			angles[0] += rollSpeed  * deltaSeconds;
+			angles[1] -= pitchSpeed * deltaSeconds;
+			angles[2] += yawSpeed   * deltaSeconds;
 
             // Compute pitch, roll, yaw first derivative to simulate gyro
             for (int k=0; k<3; ++k) {
-                gyro[k] = (angles[k] - anglesPrev[k]) / DeltaSeconds;
+                gyro[k] = (angles[k] - anglesPrev[k]) / deltaSeconds;
                 anglesPrev[k] = angles[k];
             }
-        }
+
+			// Convert vehicle's Z coordinate in meters to barometric pressure in Pascals (millibars)
+			// At low altitudes above the sea level, the pressure decreases by about 1200 Pa for every 100 meters
+			// (See https://en.wikipedia.org/wiki/Atmospheric_pressure#Altitude_variation)
+			baroPressurePascals = 1000 * (101.325 - 1.2 * verticalPositionMeters / 100);
+		}
 
 		// These are shared with HackflightSimVehicle
         float motors[4];
