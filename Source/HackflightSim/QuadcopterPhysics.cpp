@@ -42,8 +42,54 @@ void QuadcopterPhysics::init(void)
 	// No vertical accleration yet
 	verticalAcceleration = 0;
 }
+
+void QuadcopterPhysics::notifyHit(void)
+{
+    // Set movement trajectory to inverse of current trajectory
+    forwardSpeed  *= -PARAM_COLLISION_BOUNCEBACK;
+    lateralSpeed  *= -PARAM_COLLISION_BOUNCEBACK;
+    verticalSpeed *= -PARAM_COLLISION_BOUNCEBACK;;
+
+    // Start collision countdown
+    collidingSeconds = PARAM_COLLISION_SECONDS;
+}
+
 float QuadcopterPhysics::motorsToAngularVelocity(float motors[4], int a, int b, int c, int d)
 {
     return PARAM_VELOCITY_ROTATE_SCALE * ((motors[a] + motors[b]) - (motors[c] + motors[d]));
 }
- 
+
+void QuadcopterPhysics::update(float motors[4], float angles[3], float deltaSeconds)
+{
+    // Overall thrust vector, scaled by arbitrary constant for realism
+    float thrust = PARAM_THRUST_SCALE * (motors[0] + motors[1] + motors[2] + motors[3]);
+
+	// Compute right column of of R matrix converting body coordinates to world coordinates.
+	// See page 7 of http://repository.upenn.edu/cgi/viewcontent.cgi?article=1705&context=edissertations.
+	float phi   = angles[0];
+	float theta = angles[1];
+	float psi   = angles[2];
+	float r02 = cos(psi)*sin(theta) + cos(theta)*sin(phi)*sin(psi);
+	float r12 = sin(psi)*sin(theta) - cos(psi)*cos(theta)*sin(phi);
+	float r22 = cos(phi)*cos(theta);
+
+	// Overall vertical force = thrust - gravity
+	// We first multiply by the sign of the vertical world coordinate direction, because AddActorLocalOffset()
+	// will upside-down vehicle rise on negative velocity.
+	verticalAcceleration = (r22 < 0 ? -1 : +1) * (r22*thrust - GRAVITY);
+
+    // Once there's enough thrust, we're flying
+    if (verticalAcceleration > 0) {
+        flying = true;
+    }
+
+	if (flying) {
+
+		// Integrate vertical force to get vertical speed
+		verticalSpeed += (verticalAcceleration * deltaSeconds);
+
+		// To get forward and lateral speeds, integrate thrust along world coordinates
+		lateralSpeed -= thrust * PARAM_VELOCITY_TRANSLATE_SCALE * r12;
+		forwardSpeed += thrust * PARAM_VELOCITY_TRANSLATE_SCALE * r02;
+	}
+} 

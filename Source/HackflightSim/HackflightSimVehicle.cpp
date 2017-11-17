@@ -124,40 +124,11 @@ void AHackflightSimVehicle::update(float deltaSeconds)
     // Rotate copter in simulation, after converting radians to degrees
     AddActorLocalRotation(deltaRotation*(180/M_PI));
 
-    // Send current rotational values and vertical position in meters to board, so firmware can compute PIDs
+    // Send current rotational values and vertical position in meters to board, so firmware can compute motor speeds
     board->update(rollSpeed, pitchSpeed, yawSpeed, physics.verticalPosition, deltaSeconds);
 
-    // Overall thrust vector, scaled by arbitrary constant for realism
-    float thrust = PARAM_THRUST_SCALE * (board->motors[0] + board->motors[1] + board->motors[2] + board->motors[3]);
-
-	// Compute right column of of R matrix converting body coordinates to world coordinates.
-	// See page 7 of http://repository.upenn.edu/cgi/viewcontent.cgi?article=1705&context=edissertations.
-	float phi = board->angles[0];
-	float theta = board->angles[1];
-	float psi = board->angles[2];
-	float r02 = cos(psi)*sin(theta) + cos(theta)*sin(phi)*sin(psi);
-	float r12 = sin(psi)*sin(theta) - cos(psi)*cos(theta)*sin(phi);
-	float r22 = cos(phi)*cos(theta);
-
-	// Overall vertical force = thrust - gravity
-	// We first multiply by the sign of the vertical world coordinate direction, because AddActorLocalOffset()
-	// will upside-down vehicle rise on negative velocity.
-	physics.verticalAcceleration = (r22 < 0 ? -1 : +1) * (r22*thrust - physics.GRAVITY);
-
-    // Once there's enough thrust, we're flying
-    if (physics.verticalAcceleration > 0) {
-        physics.flying = true;
-    }
-
-	if (physics.flying) {
-
-		// Integrate vertical force to get vertical speed
-		physics.verticalSpeed += (physics.verticalAcceleration * deltaSeconds);
-
-		// To get forward and lateral speeds, integrate thrust along world coordinates
-		physics.lateralSpeed -= thrust * PARAM_VELOCITY_TRANSLATE_SCALE * r12;
-		physics.forwardSpeed += thrust * PARAM_VELOCITY_TRANSLATE_SCALE * r02;
-	}
+    // Update physics with motor speeds and Euler angles
+    physics.update(board->motors, board->angles, deltaSeconds);
 }
 
 void AHackflightSimVehicle::Tick(float deltaSeconds)
@@ -213,13 +184,7 @@ void AHackflightSimVehicle::NotifyHit(
 {
     Super::NotifyHit(MyComp, Other, OtherComp, bSelfMoved, HitLocation, HitNormal, NormalImpulse, Hit);
 
-    // Set movement trajectory to inverse of current trajectory
-    physics.forwardSpeed  *= -PARAM_COLLISION_BOUNCEBACK;
-    physics.lateralSpeed  *= -PARAM_COLLISION_BOUNCEBACK;
-    physics.verticalSpeed *= -PARAM_COLLISION_BOUNCEBACK;;
-
-    // Start collision countdown
-    physics.collidingSeconds = PARAM_COLLISION_SECONDS;
+    physics.notifyHit();
 }
 
 // Cycles among our three cameras

@@ -49,8 +49,11 @@ class QuadcopterPhysics {
         float pitchSpeed;
         float yawSpeed;
 
-
         float motorsToAngularVelocity(float motors[4], int a, int b, int c, int d);
 
         void init(void);
+
+        void update(float motors[4], float angles[3], float deltaSeconds);
+
+        void notifyHit(void);
 };
