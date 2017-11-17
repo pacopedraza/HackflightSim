@@ -144,26 +144,28 @@ void AHackflightSimVehicle::update(float deltaSeconds)
     // Overall thrust vector, scaled by arbitrary constant for realism
     float thrust = PARAM_THRUST_SCALE * (board->motors[0] + board->motors[1] + board->motors[2] + board->motors[3]);
 
+	// Compute right column of of R matrix converting body coordinates to world coordinates.
+	// See page 7 of http://repository.upenn.edu/cgi/viewcontent.cgi?article=1705&context=edissertations.
+	float phi = board->angles[0];
+	float theta = board->angles[1];
+	float psi = board->angles[2];
+	float r02 = cos(psi)*sin(theta) + cos(theta)*sin(phi)*sin(psi);
+	float r12 = sin(psi)*sin(theta) - cos(psi)*cos(theta)*sin(phi);
+	float r22 = cos(phi)*cos(theta);
+
+	// Overall vertical force = thrust - gravity
+	// We first multiply by the sign of the vertical world coordinate direction, because AddActorLocalOffset()
+	// will upside-down vehicle rise on negative velocity.
+	verticalAcceleration = (r22 < 0 ? -1 : +1) * (r22*thrust - GRAVITY);
+
+	board->dprintf("%+2.2f\n", verticalAcceleration);
+
     // Once there's enough thrust, we're flying
-    if (thrust > PARAM_THRUST_MIN_FLYING) {
+    if (verticalAcceleration > 0) {
         flying = true;
     }
 
 	if (flying) {
-
-		// Compute right column of of R matrix converting body coordinates to world coordinates.
-		// See page 7 of http://repository.upenn.edu/cgi/viewcontent.cgi?article=1705&context=edissertations.
-		float phi   = board->angles[0];
-		float theta = board->angles[1];
-		float psi   = board->angles[2];
-		float r02 = cos(psi)*sin(theta) + cos(theta)*sin(phi)*sin(psi);
-		float r12 = sin(psi)*sin(theta) - cos(psi)*cos(theta)*sin(phi);
-		float r22 = cos(phi)*cos(theta);
-
-		// Overall vertical force = thrust - gravity
-        // We first multiply by the sign of the vertical world coordinate direction, because AddActorLocalOffset()
-        // will upside-down vehicle rise on negative velocity.
-		verticalAcceleration = (r22 < 0 ? -1 : +1) * (r22*thrust - GRAVITY);
 
 		// Integrate vertical force to get vertical speed
 		verticalSpeed += (verticalAcceleration * deltaSeconds);

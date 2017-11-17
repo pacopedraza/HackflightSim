@@ -35,6 +35,8 @@ namespace hf {
 
 	class SimBoard : public Board {
 
+	public:
+
 		// These methods are called by Hackflight
 
 		void init(Config& config)
@@ -118,8 +120,6 @@ namespace hf {
  
 		void update(float rollSpeed, float pitchSpeed, float yawSpeed, float verticalPositionMeters, float deltaSeconds)
 		{
-			dprintf("%+2.f\n", rollSpeed);
-
 			// Track time
 			micros += 1e6 * deltaSeconds;
 
