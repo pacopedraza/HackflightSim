@@ -110,18 +110,11 @@ void AHackflightSimVehicle::update(float deltaSeconds)
     // Update our flight controller
     hackflight.update();
 
-    // Compute body-frame roll, pitch, yaw velocities based on differences between motors
-    physics.rollSpeed  = physics.motorsToAngularVelocity(board->motors, 2, 3, 0, 1);
-    physics.pitchSpeed = physics.motorsToAngularVelocity(board->motors, 1, 3, 0, 2); 
-    physics.yawSpeed   = physics.motorsToAngularVelocity(board->motors, 1, 2, 0, 3); 
-
-    // Calculate change in rotation this frame
+    // Rotate copter in simulation, after converting radians to degrees
     FRotator deltaRotation(0, 0, 0);
     deltaRotation.Pitch = physics.pitchSpeed * deltaSeconds;
     deltaRotation.Yaw   = physics.yawSpeed   * deltaSeconds;
     deltaRotation.Roll  = physics.rollSpeed  * deltaSeconds;
-
-    // Rotate copter in simulation, after converting radians to degrees
     AddActorLocalRotation(deltaRotation*(180/M_PI));
 
     // Send current rotational values and vertical position in meters to board, so firmware can compute motor speeds

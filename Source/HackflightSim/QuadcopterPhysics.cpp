@@ -73,6 +73,11 @@ float QuadcopterPhysics::motorsToAngularVelocity(float motors[4], int a, int b, 
 
 void QuadcopterPhysics::update(float motors[4], float angles[3], float deltaSeconds)
 {
+    // Compute body-frame roll, pitch, yaw velocities based on differences between motors
+    rollSpeed  = motorsToAngularVelocity(motors, 2, 3, 0, 1);
+    pitchSpeed = motorsToAngularVelocity(motors, 1, 3, 0, 2); 
+    yawSpeed   = motorsToAngularVelocity(motors, 1, 2, 0, 3); 
+
     // Overall thrust vector, scaled by arbitrary constant for realism
     float thrust = PARAM_THRUST_SCALE * (motors[0] + motors[1] + motors[2] + motors[3]);
 

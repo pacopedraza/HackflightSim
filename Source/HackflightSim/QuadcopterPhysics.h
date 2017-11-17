@@ -36,6 +36,8 @@ class QuadcopterPhysics {
         // Vertical acceleration in meters per second per second
         float verticalAcceleration;
 
+        float motorsToAngularVelocity(float motors[4], int a, int b, int c, int d);
+
     public:
 
         // Translational speed in meters per second
@@ -51,13 +53,11 @@ class QuadcopterPhysics {
         float pitchSpeed;
         float yawSpeed;
 
-        bool handlingCollision(float deltaSeconds);
-
-        float motorsToAngularVelocity(float motors[4], int a, int b, int c, int d);
-
         void init(void);
 
         void update(float motors[4], float angles[3], float deltaSeconds);
+
+        bool handlingCollision(float deltaSeconds);
 
         void notifyHit(void);
 };
