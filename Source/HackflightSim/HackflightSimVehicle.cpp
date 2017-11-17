@@ -130,8 +130,8 @@ void AHackflightSimVehicle::update(float deltaSeconds)
     deltaRotation.Yaw   = yawSpeed   * deltaSeconds;
     deltaRotation.Roll  = rollSpeed  * deltaSeconds;
 
-    // Rotate copter in simulation
-    AddActorLocalRotation(deltaRotation);
+    // Rotate copter in simulation, after converting radians to degrees
+    AddActorLocalRotation(deltaRotation*(180/M_PI));
 
     // Send current rotational values and vertical position in meters to board, so firmware can compute PIDs
     board->update(rollSpeed, pitchSpeed, yawSpeed, verticalPosition, deltaSeconds);
@@ -148,9 +148,9 @@ void AHackflightSimVehicle::update(float deltaSeconds)
 
 		// Compute right column of of R matrix converting body coordinates to world coordinates.
 		// See page 7 of http://repository.upenn.edu/cgi/viewcontent.cgi?article=1705&context=edissertations.
-		float phi   = radians(board->angles[0]);
-		float theta = radians(board->angles[1]);
-		float psi   = radians(board->angles[2]);
+		float phi   = board->angles[0];
+		float theta = board->angles[1];
+		float psi   = board->angles[2];
 		float r02 = cos(psi)*sin(theta) + cos(theta)*sin(phi)*sin(psi);
 		float r12 = sin(psi)*sin(theta) - cos(psi)*cos(theta)*sin(phi);
 		float r22 = cos(phi)*cos(theta);
@@ -258,11 +258,6 @@ float AHackflightSimVehicle::motorsToAngularVelocity(int a, int b, int c, int d)
 {
     return PARAM_VELOCITY_ROTATE_SCALE * 
         ((board->motors[a] + board->motors[b]) - (board->motors[c] + board->motors[d]));
-}
-
-float AHackflightSimVehicle::radians(float degrees)
-{
-	return degrees * M_PI / 180;
 }
     
 void AHackflightSimVehicle::createCameraWithSpringArm(

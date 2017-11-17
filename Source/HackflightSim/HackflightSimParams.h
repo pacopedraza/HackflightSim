@@ -40,7 +40,7 @@ static const float PARAM_THRUST_SCALE      = 5.f;
 static const float PARAM_THRUST_MIN_FLYING = 12.f;
 
 // Controls "snappiness" of response
-static const float PARAM_VELOCITY_ROTATE_SCALE    = 100.f;
+static const float PARAM_VELOCITY_ROTATE_SCALE    = 1.75;
 static const float PARAM_VELOCITY_TRANSLATE_SCALE = 0.05f;
 
 // Controls duration and extent of bounce-back on collision
