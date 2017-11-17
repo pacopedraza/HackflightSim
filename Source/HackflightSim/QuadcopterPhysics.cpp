@@ -109,4 +109,7 @@ void QuadcopterPhysics::update(float motors[4], float angles[3], float deltaSeco
 		lateralSpeed -= thrust * PARAM_VELOCITY_TRANSLATE_SCALE * r12;
 		forwardSpeed += thrust * PARAM_VELOCITY_TRANSLATE_SCALE * r02;
 	}
+
+    // Integrate vertical speed to get verticalPosition
+    verticalPosition += verticalSpeed * deltaSeconds;
 } 

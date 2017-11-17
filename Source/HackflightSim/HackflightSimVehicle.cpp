@@ -88,7 +88,7 @@ AHackflightSimVehicle::AHackflightSimVehicle()
 	activeCameraIndex = 0;
 	keyDownTime = 0;
 
-	// Create four motors at specified positions, with specified rotation directions
+	// Simulate four motors at specified positions, with specified rotation directions
 	motors[0] = new HackflightSimMotor(this, VehicleMesh, PARAM_MOTOR_REAR_X, PARAM_MOTOR_RIGHT_Y,  +1, 0);
 	motors[1] = new HackflightSimMotor(this, VehicleMesh, PARAM_MOTOR_FRONT_X, PARAM_MOTOR_RIGHT_Y, -1, 1);
 	motors[2] = new HackflightSimMotor(this, VehicleMesh, PARAM_MOTOR_REAR_X, PARAM_MOTOR_LEFT_Y,   -1, 2);
@@ -135,9 +135,6 @@ void AHackflightSimVehicle::Tick(float deltaSeconds)
 
     // Compute current translation movement
     const FVector LocalMove = FVector(physics.forwardSpeed*deltaSeconds, physics.lateralSpeed*deltaSeconds, physics.verticalSpeed*deltaSeconds); 
-
-    // Integrate vertical speed to get verticalPosition
-    physics.verticalPosition += physics.verticalSpeed * deltaSeconds;
 
     // Move copter (UE4 uses cm, so multiply by 100 first)
     AddActorLocalOffset(100*LocalMove, true);
