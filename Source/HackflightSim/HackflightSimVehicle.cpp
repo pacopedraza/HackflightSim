@@ -145,12 +145,7 @@ void AHackflightSimVehicle::Tick(float deltaSeconds)
 	}
 	
     // During collision recovery, vehicle is not controlled by firmware
-    if (physics.collidingSeconds > 0) {
-        physics.collidingSeconds -= deltaSeconds;
-    }
-
-    // Normal operation, vehicle controlled by firmware
-    else {
+    if (!physics.handlingCollision(deltaSeconds)) {
         update(deltaSeconds);
     }
 
@@ -211,8 +206,6 @@ void AHackflightSimVehicle::cycleCamera(void)
 		FpvCamera->Deactivate();
 	}
 }
-
-
    
 void AHackflightSimVehicle::createCameraWithSpringArm(
             const wchar_t * cameraName, 

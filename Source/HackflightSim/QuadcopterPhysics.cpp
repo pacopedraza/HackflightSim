@@ -54,6 +54,18 @@ void QuadcopterPhysics::notifyHit(void)
     collidingSeconds = PARAM_COLLISION_SECONDS;
 }
 
+bool QuadcopterPhysics::handlingCollision(float deltaSeconds)
+{
+    bool retval = false;
+
+    if (collidingSeconds > 0) {
+        collidingSeconds -= deltaSeconds;
+        retval = true;
+    }
+
+    return retval;
+}
+
 float QuadcopterPhysics::motorsToAngularVelocity(float motors[4], int a, int b, int c, int d)
 {
     return PARAM_VELOCITY_ROTATE_SCALE * ((motors[a] + motors[b]) - (motors[c] + motors[d]));

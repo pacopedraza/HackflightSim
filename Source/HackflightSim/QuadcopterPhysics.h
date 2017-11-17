@@ -22,7 +22,10 @@ along with HackfilghtSim.  If not, see <http://www.gnu.org/licenses/>.
 
 class QuadcopterPhysics {
 
-    public:
+    private:
+
+        // Gravitational constant 
+        static constexpr float GRAVITY = 9.80665;
 
         // Starts out false, then true once some thrust is applied, to avoid treating initial floor contact as a collision
         bool flying;
@@ -30,8 +33,10 @@ class QuadcopterPhysics {
         // Counts down time during which simulation is taken over by collision recovery
         float collidingSeconds;
 
-        // Gravitational constant 
-        static constexpr float GRAVITY = 9.80665;
+        // Vertical acceleration in meters per second per second
+        float verticalAcceleration;
+
+    public:
 
         // Translational speed in meters per second
         float forwardSpeed;
@@ -41,13 +46,12 @@ class QuadcopterPhysics {
         // Vertical position in meters
         float verticalPosition;
 
-        // Vertical acceleration in meters per second per second
-        float verticalAcceleration;
-
         // Rotational speeds, in radians per second
         float rollSpeed;
         float pitchSpeed;
         float yawSpeed;
+
+        bool handlingCollision(float deltaSeconds);
 
         float motorsToAngularVelocity(float motors[4], int a, int b, int c, int d);
 
