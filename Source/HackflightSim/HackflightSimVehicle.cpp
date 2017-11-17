@@ -104,26 +104,6 @@ AHackflightSimVehicle::AHackflightSimVehicle()
 	hackflight.init(board, new hf::Controller(), new hf::SimModel());
 }
 
-// Interacts with Hackflight firmware to control vehicle
-void AHackflightSimVehicle::update(float deltaSeconds)
-{
-    // Update our flight controller
-    hackflight.update();
-
-    // Rotate copter in simulation, after converting radians to degrees
-    FRotator deltaRotation(0, 0, 0);
-    deltaRotation.Pitch = physics.pitchSpeed * deltaSeconds;
-    deltaRotation.Yaw   = physics.yawSpeed   * deltaSeconds;
-    deltaRotation.Roll  = physics.rollSpeed  * deltaSeconds;
-    AddActorLocalRotation(deltaRotation*(180/M_PI));
-
-    // Send current rotational values and vertical position in meters to board, so firmware can compute motor speeds
-    board->update(physics.rollSpeed, physics.pitchSpeed, physics.yawSpeed, physics.verticalPosition, deltaSeconds);
-
-    // Update physics with motor speeds and Euler angles
-    physics.update(board->motors, board->angles, deltaSeconds);
-}
-
 void AHackflightSimVehicle::Tick(float deltaSeconds)
 {
 	// Spacebar cycles through cameras
@@ -139,14 +119,25 @@ void AHackflightSimVehicle::Tick(float deltaSeconds)
 	
     // During collision recovery, vehicle is not controlled by firmware
     if (!physics.handlingCollision(deltaSeconds)) {
-        update(deltaSeconds);
+
+        // Update our flight controller
+        hackflight.update();
+
+        // Rotate copter in simulation, after converting radians to degrees
+        AddActorLocalRotation(deltaSeconds * FRotator(physics.pitchSpeed, physics.yawSpeed, physics.rollSpeed) * (180/M_PI));
+
+        // Send current rotational values and vertical position in meters to board, so firmware can compute motor speeds
+        board->update(physics.rollSpeed, physics.pitchSpeed, physics.yawSpeed, physics.verticalPosition, deltaSeconds);
+
+        // Update physics with motor speeds and Euler angles
+        physics.update(board->motors, board->angles, deltaSeconds);
     }
 
     // Compute current translation movement
     const FVector LocalMove = FVector(physics.forwardSpeed*deltaSeconds, physics.lateralSpeed*deltaSeconds, physics.verticalSpeed*deltaSeconds); 
 
-	// Integrate vertical speed to get verticalPosition
-	physics.verticalPosition += physics.verticalSpeed * deltaSeconds;
+    // Integrate vertical speed to get verticalPosition
+    physics.verticalPosition += physics.verticalSpeed * deltaSeconds;
 
     // Move copter (UE4 uses cm, so multiply by 100 first)
     AddActorLocalOffset(100*LocalMove, true);
@@ -179,45 +170,45 @@ void AHackflightSimVehicle::NotifyHit(
 void AHackflightSimVehicle::cycleCamera(void)
 {
 
-	activeCameraIndex = (activeCameraIndex + 1) % 3;
+    activeCameraIndex = (activeCameraIndex + 1) % 3;
 
-	switch (activeCameraIndex) {
+    switch (activeCameraIndex) {
 
-	case 1:
-		FollowCamera->Deactivate();
-		ChaseCamera->Activate();
-		FpvCamera->Deactivate();
-		break;
-	case 2:
-		FollowCamera->Deactivate();
-		ChaseCamera->Deactivate();
-		FpvCamera->Activate();
-		break;
-	default:
-		FollowCamera->Activate();
-		ChaseCamera->Deactivate();
-		FpvCamera->Deactivate();
-	}
+        case 1:
+            FollowCamera->Deactivate();
+            ChaseCamera->Activate();
+            FpvCamera->Deactivate();
+            break;
+        case 2:
+            FollowCamera->Deactivate();
+            ChaseCamera->Deactivate();
+            FpvCamera->Activate();
+            break;
+        default:
+            FollowCamera->Activate();
+            ChaseCamera->Deactivate();
+            FpvCamera->Deactivate();
+    }
 }
-   
+
 void AHackflightSimVehicle::createCameraWithSpringArm(
-            const wchar_t * cameraName, 
-            UCameraComponent **camera,
-            const wchar_t * springArmName,
-            USpringArmComponent **springArm,
-            float distance,
-            float elevation,
-            float pitch,
-            bool usePawnControlRotation)
+        const wchar_t * cameraName, 
+        UCameraComponent **camera,
+        const wchar_t * springArmName,
+        USpringArmComponent **springArm,
+        float distance,
+        float elevation,
+        float pitch,
+        bool usePawnControlRotation)
 {
     *springArm = CreateDefaultSubobject<USpringArmComponent>(springArmName);
-	(*springArm)->SetupAttachment(RootComponent);
-	(*springArm)->TargetArmLength = distance;
-	(*springArm)->SetRelativeLocation(FVector(0.f, 0.f, elevation));
-	(*springArm)->bUsePawnControlRotation = usePawnControlRotation; 
-	(*springArm)->SetWorldRotation(FRotator(pitch, 0.f, 0.f));
+    (*springArm)->SetupAttachment(RootComponent);
+    (*springArm)->TargetArmLength = distance;
+    (*springArm)->SetRelativeLocation(FVector(0.f, 0.f, elevation));
+    (*springArm)->bUsePawnControlRotation = usePawnControlRotation; 
+    (*springArm)->SetWorldRotation(FRotator(pitch, 0.f, 0.f));
 
-	*camera = CreateDefaultSubobject<UCameraComponent>(cameraName);
-	(*camera)->SetupAttachment(*springArm, USpringArmComponent::SocketName); 
-	(*camera)->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
+    *camera = CreateDefaultSubobject<UCameraComponent>(cameraName);
+    (*camera)->SetupAttachment(*springArm, USpringArmComponent::SocketName); 
+    (*camera)->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 }

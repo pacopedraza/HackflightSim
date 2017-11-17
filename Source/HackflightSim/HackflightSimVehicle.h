@@ -38,31 +38,31 @@ class AHackflightSimVehicle : public APawn
 {
 	GENERATED_BODY()
 
-	/** StaticMesh component that will be the visuals for our flying pawn */
+	// StaticMesh component that will be the visuals for our flying pawn
 	UPROPERTY(Category = Mesh, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class UStaticMeshComponent* VehicleMesh;
 
-	/** Chase camera */
+	// Chase camera
 	UPROPERTY(Category = Camera, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* ChaseCamera;
 
-	/** Spring arm for chase camera */
+	// Spring arm for chase camera
 	UPROPERTY(Category = Camera, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* ChaseCameraSpringArm;
 
-	/** Follow camera */
+	// Follow camera
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* FollowCamera;
 
-	/** Spring arm for follow camera */
+	// Spring arm for follow camera
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* FollowCameraSpringArm;
 
-	/** FPV camera */
+	// FPV camera
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* FpvCamera;
 
-	/** Spring arm for FPV camera */
+	// Spring arm for FPV camera
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* FpvCameraSpringArm;
 
@@ -70,25 +70,31 @@ public:
 
 	AHackflightSimVehicle();
 
-	// Begin AActor overrides
+	// AActor overrides
 	virtual void Tick(float DeltaSeconds) override;
-	virtual void NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit) override;
-	// End AActor overrides
+	virtual void NotifyHit(
+            class UPrimitiveComponent* MyComp, 
+            class AActor* Other, 
+            class UPrimitiveComponent* OtherComp, 
+            bool bSelfMoved, 
+            FVector HitLocation, 
+            FVector HitNormal, 
+            FVector NormalImpulse, 
+            const FHitResult& Hit) 
+        override;
 
 private:
 
+    // Physics simulation
     QuadcopterPhysics physics;
 
-	/** Motors, props */
+	// Motors, props
 	HackflightSimMotor * motors[4];
 
-	/** Hackfight Board implementation */
+	// Hackfight Board implementation
 	hf::SimBoard * board;
 
-    /** Updates simulation using Hackflight firmware */
-    void update(float DeltaSeconds);
-
-	/** Creates a camera and associated spring-arm */
+	// Creates a camera and associated spring-arm
     void createCameraWithSpringArm(
             const wchar_t * cameraName, 
             UCameraComponent **camera,
@@ -99,7 +105,7 @@ private:
             float pitch,
             bool usePawnControlRotation);
 
-	/** Helps us cycle among cameras */
+	// Helps us cycle among cameras
 	uint8_t activeCameraIndex;
 	float keyDownTime;
 	void cycleCamera(void);
