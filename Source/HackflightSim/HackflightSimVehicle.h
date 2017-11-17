@@ -22,6 +22,9 @@ along with HackflightSim.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
+// Physics support
+#include <QuadcopterPhysics.h>
+
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 
@@ -74,28 +77,7 @@ public:
 
 private:
 
-	/** Starts out false, then true once some thrust is applied, to avoid treating initial floor contact as a collision */
-	bool flying;
-
-    /** Counts down time during which simulation is taken over by collision recovery */
-    float collidingSeconds;
-
-	/*** Gravitational constant */
-	static constexpr float GRAVITY = 9.80665;
-
-	/** Translational speed in meters per second */
-	float forwardSpeed;
-	float lateralSpeed;
-	float verticalSpeed;
-
-	/** Vertical position in meters */
-	float verticalPosition;
-
-	/** Vertical acceleration in meters per second per second */
-	float verticalAcceleration;
-
-	/** Motor thrusts to angular velocity in body frame: (a+b) - (c+d) */
-	float motorsToAngularVelocity(int a, int b, int c, int d);
+    QuadcopterPhysics physics;
 
 	/** Motors, props */
 	HackflightSimMotor * motors[4];
@@ -105,9 +87,6 @@ private:
 
     /** Updates simulation using Hackflight firmware */
     void update(float DeltaSeconds);
-
-	/** Converts degrees to radians */
-	static float radians(float degrees);
 
 	/** Creates a camera and associated spring-arm */
     void createCameraWithSpringArm(

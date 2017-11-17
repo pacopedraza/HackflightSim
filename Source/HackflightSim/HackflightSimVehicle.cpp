@@ -1,7 +1,7 @@
 /*
 HackflightSimVehicle.cpp: class implementation for AHackflightSimVehicle
 
-Simulates vehicle physics
+Simulates vehicle physics and calls UE4 methods to move vehicle
 
 Copyright (C) Simon D. Levy 2017
 
@@ -68,12 +68,6 @@ AHackflightSimVehicle::AHackflightSimVehicle()
 	VehicleMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("VehicleMesh"));
 	VehicleMesh->SetStaticMesh(VehicleConstructorStatics.VehicleMesh.Get());	// Set static mesh
 	RootComponent = VehicleMesh;
-
-    // We're not flying until there's positive thrust
-    flying = false;
-
-    // No collisions yet
-    collidingSeconds = 0;
     
 	// Create the follow camera
     createCameraWithSpringArm( L"FollowCamera", &FollowCamera, L"FollowCameraSpringArm", 
@@ -100,16 +94,8 @@ AHackflightSimVehicle::AHackflightSimVehicle()
 	motors[2] = new HackflightSimMotor(this, VehicleMesh, PARAM_MOTOR_REAR_X, PARAM_MOTOR_LEFT_Y,   -1, 2);
 	motors[3] = new HackflightSimMotor(this, VehicleMesh, PARAM_MOTOR_FRONT_X, PARAM_MOTOR_LEFT_Y,  +1, 3);
 
-	// Set initial velocities
-	forwardSpeed = 0;
-	lateralSpeed = 0;
-	verticalSpeed = 0;
-
-	// Start at "seal level"
-	verticalPosition = 0;
-
-	// No vertical accleration yet
-	verticalAcceleration = 0;
+    // Initialize the physics
+    physics.init();
 
 	// Create new SimBoard object
 	board = new hf::SimBoard();
@@ -125,9 +111,9 @@ void AHackflightSimVehicle::update(float deltaSeconds)
     hackflight.update();
 
     // Compute body-frame roll, pitch, yaw velocities based on differences between motors
-    float rollSpeed  = motorsToAngularVelocity(2, 3, 0, 1);
-    float pitchSpeed = motorsToAngularVelocity(1, 3, 0, 2); 
-    float yawSpeed   = motorsToAngularVelocity(1, 2, 0, 3); 
+    float rollSpeed  = physics.motorsToAngularVelocity(board->motors, 2, 3, 0, 1);
+    float pitchSpeed = physics.motorsToAngularVelocity(board->motors, 1, 3, 0, 2); 
+    float yawSpeed   = physics.motorsToAngularVelocity(board->motors, 1, 2, 0, 3); 
 
     // Calculate change in rotation this frame
     FRotator deltaRotation(0, 0, 0);
@@ -139,7 +125,7 @@ void AHackflightSimVehicle::update(float deltaSeconds)
     AddActorLocalRotation(deltaRotation*(180/M_PI));
 
     // Send current rotational values and vertical position in meters to board, so firmware can compute PIDs
-    board->update(rollSpeed, pitchSpeed, yawSpeed, verticalPosition, deltaSeconds);
+    board->update(rollSpeed, pitchSpeed, yawSpeed, physics.verticalPosition, deltaSeconds);
 
     // Overall thrust vector, scaled by arbitrary constant for realism
     float thrust = PARAM_THRUST_SCALE * (board->motors[0] + board->motors[1] + board->motors[2] + board->motors[3]);
@@ -156,23 +142,21 @@ void AHackflightSimVehicle::update(float deltaSeconds)
 	// Overall vertical force = thrust - gravity
 	// We first multiply by the sign of the vertical world coordinate direction, because AddActorLocalOffset()
 	// will upside-down vehicle rise on negative velocity.
-	verticalAcceleration = (r22 < 0 ? -1 : +1) * (r22*thrust - GRAVITY);
-
-	board->dprintf("%+2.2f\n", verticalAcceleration);
+	physics.verticalAcceleration = (r22 < 0 ? -1 : +1) * (r22*thrust - physics.GRAVITY);
 
     // Once there's enough thrust, we're flying
-    if (verticalAcceleration > 0) {
-        flying = true;
+    if (physics.verticalAcceleration > 0) {
+        physics.flying = true;
     }
 
-	if (flying) {
+	if (physics.flying) {
 
 		// Integrate vertical force to get vertical speed
-		verticalSpeed += (verticalAcceleration * deltaSeconds);
+		physics.verticalSpeed += (physics.verticalAcceleration * deltaSeconds);
 
 		// To get forward and lateral speeds, integrate thrust along world coordinates
-		lateralSpeed -= thrust * PARAM_VELOCITY_TRANSLATE_SCALE * r12;
-		forwardSpeed += thrust * PARAM_VELOCITY_TRANSLATE_SCALE * r02;
+		physics.lateralSpeed -= thrust * PARAM_VELOCITY_TRANSLATE_SCALE * r12;
+		physics.forwardSpeed += thrust * PARAM_VELOCITY_TRANSLATE_SCALE * r02;
 	}
 }
 
@@ -190,8 +174,8 @@ void AHackflightSimVehicle::Tick(float deltaSeconds)
 	}
 	
     // During collision recovery, vehicle is not controlled by firmware
-    if (collidingSeconds > 0) {
-        collidingSeconds -= deltaSeconds;
+    if (physics.collidingSeconds > 0) {
+        physics.collidingSeconds -= deltaSeconds;
     }
 
     // Normal operation, vehicle controlled by firmware
@@ -200,15 +184,15 @@ void AHackflightSimVehicle::Tick(float deltaSeconds)
     }
 
     // Compute current translation movement
-    const FVector LocalMove = FVector(forwardSpeed*deltaSeconds, lateralSpeed*deltaSeconds, verticalSpeed*deltaSeconds); 
+    const FVector LocalMove = FVector(physics.forwardSpeed*deltaSeconds, physics.lateralSpeed*deltaSeconds, physics.verticalSpeed*deltaSeconds); 
 
 	// Integrate vertical speed to get verticalPosition
-	verticalPosition += verticalSpeed * deltaSeconds;
+	physics.verticalPosition += physics.verticalSpeed * deltaSeconds;
 
     // Move copter (UE4 uses cm, so multiply by 100 first)
     AddActorLocalOffset(100*LocalMove, true);
 
-    // Rotate props
+    // Spin props
     for (int k=0; k<4; ++k)
         motors[k]->rotate(board->motors[k]);
 
@@ -230,12 +214,12 @@ void AHackflightSimVehicle::NotifyHit(
     Super::NotifyHit(MyComp, Other, OtherComp, bSelfMoved, HitLocation, HitNormal, NormalImpulse, Hit);
 
     // Set movement trajectory to inverse of current trajectory
-    forwardSpeed  *= -PARAM_COLLISION_BOUNCEBACK;
-    lateralSpeed  *= -PARAM_COLLISION_BOUNCEBACK;
-    verticalSpeed *= -PARAM_COLLISION_BOUNCEBACK;;
+    physics.forwardSpeed  *= -PARAM_COLLISION_BOUNCEBACK;
+    physics.lateralSpeed  *= -PARAM_COLLISION_BOUNCEBACK;
+    physics.verticalSpeed *= -PARAM_COLLISION_BOUNCEBACK;;
 
     // Start collision countdown
-    collidingSeconds = PARAM_COLLISION_SECONDS;
+    physics.collidingSeconds = PARAM_COLLISION_SECONDS;
 }
 
 // Cycles among our three cameras
@@ -264,12 +248,7 @@ void AHackflightSimVehicle::cycleCamera(void)
 }
 
 
-float AHackflightSimVehicle::motorsToAngularVelocity(int a, int b, int c, int d)
-{
-    return PARAM_VELOCITY_ROTATE_SCALE * 
-        ((board->motors[a] + board->motors[b]) - (board->motors[c] + board->motors[d]));
-}
-    
+   
 void AHackflightSimVehicle::createCameraWithSpringArm(
             const wchar_t * cameraName, 
             UCameraComponent **camera,
