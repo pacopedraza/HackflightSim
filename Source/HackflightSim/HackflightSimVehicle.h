@@ -91,6 +91,9 @@ private:
 	/** Vertical position in meters */
 	float verticalPosition;
 
+	/** Vertical acceleration in meters per second per second */
+	float verticalAcceleration;
+
 	/** Motor thrusts to angular velocity in body frame: (a+b) - (c+d) */
 	float motorsToAngularVelocity(int a, int b, int c, int d);
 

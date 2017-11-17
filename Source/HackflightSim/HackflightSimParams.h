@@ -27,14 +27,14 @@ static const float PARAM_PROP_SPEED = 40.f;
 static const float PARAM_CAM_DISTANCE  = 60.f;
 static const float PARAM_CAM_ELEVATION = 17.f;
 
-// Appropriate for 3DFly frame
+// Centimer dispacements, appropriate for 3DFly frame
 static const float PARAM_MOTOR_REAR_X  = -3.7f;
 static const float PARAM_MOTOR_FRONT_X = +3.7f;
 static const float PARAM_MOTOR_RIGHT_Y = +2.8f;
 static const float PARAM_MOTOR_LEFT_Y  = -4.7f;
 
-// Scales up thrust (substitutes for mass, torque, etc.)
-static const float PARAM_THRUST_SCALE      = 5.f;
+// Scales up thrust to radians per second (substitutes for mass, torque, etc.)
+static const float PARAM_THRUST_SCALE = 5.f;
 
 // Minimum thrust for liftoff (assumes vehicle oriented for takeoff on start)
 static const float PARAM_THRUST_MIN_FLYING = 12.f;

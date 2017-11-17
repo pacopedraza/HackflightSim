@@ -1,6 +1,8 @@
 /*
 HackflightSimVehicle.cpp: class implementation for AHackflightSimVehicle
 
+Simulates vehicle physics
+
 Copyright (C) Simon D. Levy 2017
 
 This file is part of HackflightSim.
@@ -106,6 +108,9 @@ AHackflightSimVehicle::AHackflightSimVehicle()
 	// Start at "seal level"
 	verticalPosition = 0;
 
+	// No vertical accleration yet
+	verticalAcceleration = 0;
+
 	// Create new SimBoard object
 	board = new hf::SimBoard();
 
@@ -155,10 +160,13 @@ void AHackflightSimVehicle::update(float deltaSeconds)
 		float r12 = sin(psi)*sin(theta) - cos(psi)*cos(theta)*sin(phi);
 		float r22 = cos(phi)*cos(theta);
 
-		// Overall vertical force = thrust - gravity;  integrate to get vertical speed.
+		// Overall vertical force = thrust - gravity
         // We first multiply by the sign of the vertical world coordinate direction, because AddActorLocalOffset()
         // will upside-down vehicle rise on negative velocity.
-		verticalSpeed += (r22<0?-1:+1) * ((r22*thrust - GRAVITY) * deltaSeconds);
+		verticalAcceleration = (r22 < 0 ? -1 : +1) * (r22*thrust - GRAVITY);
+
+		// Integrate vertical force to get vertical speed
+		verticalSpeed += (verticalAcceleration * deltaSeconds);
 
 		// To get forward and lateral speeds, integrate thrust along world coordinates
 		lateralSpeed -= thrust * PARAM_VELOCITY_TRANSLATE_SCALE * r12;
