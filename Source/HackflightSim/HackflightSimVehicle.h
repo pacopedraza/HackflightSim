@@ -26,7 +26,8 @@ along with HackflightSim.  If not, see <http://www.gnu.org/licenses/>.
 #include "GameFramework/Pawn.h"
 
 #include "HackflightSimMotor.h"
-#include "HackflightSimBoard.h"
+
+#include <boards/sim.hpp>
 
 #include "HackflightSimVehicle.generated.h"
 
