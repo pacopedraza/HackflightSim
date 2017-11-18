@@ -22,9 +22,6 @@ along with HackflightSim.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-// Physics support
-#include <QuadcopterPhysics.h>
-
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 
@@ -84,9 +81,6 @@ public:
         override;
 
 private:
-
-    // Physics simulation
-    QuadcopterPhysics physics;
 
 	// Motors, props
 	HackflightSimMotor * motors[4];
