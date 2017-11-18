@@ -22,12 +22,17 @@ class QuadcopterPhysics {
 
     public:
 
+        // Resets all state variables
         void init(void);
 
+        // Updates physics model with Euler angles and motor speeds from boards, time delta from simulator
         void update(float angles[3], float motors[4], float deltaSeconds);
 
+        // Notifies physics that there's been a collision.  
+        // XXX This method should get information about the other object, etc.
         void notifyHit(void);
 
+        // Returns true if physics is still handling a collision, false otherwise
         bool handlingCollision(float deltaSeconds);
 
         // Translational speed in meters per second
@@ -36,12 +41,10 @@ class QuadcopterPhysics {
         float verticalSpeed;
 
         // Vertical position in meters
-        float verticalPosition;
+        float altitude;
 
         // Rotational speeds, in radians per second
-        float rollSpeed;
-        float pitchSpeed;
-        float yawSpeed;
+        float angularSpeeds[3];
 
     private:
 

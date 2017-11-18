@@ -26,10 +26,12 @@ void QuadcopterPhysics::init(void)
         forwardSpeed = 0;
         lateralSpeed = 0;
         verticalSpeed = 0;
-        verticalPosition = 0;
-        rollSpeed = 0;
-        pitchSpeed = 0;
-        yawSpeed = 0;
+        altitude = 0;
+
+        for (uint8_t k=0; k<3; ++k) {
+            angularSpeeds[k] = 0;
+        }
+
         flying = false;
         collidingSeconds = 0;
         verticalAcceleration = 0;
@@ -39,6 +41,7 @@ void QuadcopterPhysics::init(void)
 void QuadcopterPhysics::notifyHit(void)
 {
     // Set movement trajectory to inverse of current trajectory
+    // XXX We need a more realistic result, like tumbling to ground.
     forwardSpeed  *= -PARAM_COLLISION_BOUNCEBACK;
     lateralSpeed  *= -PARAM_COLLISION_BOUNCEBACK;
     verticalSpeed *= -PARAM_COLLISION_BOUNCEBACK;;
@@ -62,9 +65,9 @@ bool QuadcopterPhysics::handlingCollision(float deltaSeconds)
 void QuadcopterPhysics::update(float angles[3], float motors[4], float deltaSeconds)
 {
     // Compute body-frame roll, pitch, yaw velocities based on differences between motors
-    rollSpeed  = motorsToAngularVelocity(motors, 2, 3, 0, 1);
-    pitchSpeed = motorsToAngularVelocity(motors, 1, 3, 0, 2); 
-    yawSpeed   = motorsToAngularVelocity(motors, 1, 2, 0, 3); 
+    angularSpeeds[0] = motorsToAngularVelocity(motors, 2, 3, 0, 1);
+    angularSpeeds[1] = motorsToAngularVelocity(motors, 1, 3, 0, 2); 
+    angularSpeeds[2] = motorsToAngularVelocity(motors, 1, 2, 0, 3); 
 
     // Overall thrust vector, scaled by arbitrary constant for realism
     float thrust = PARAM_THRUST_SCALE * (motors[0] + motors[1] + motors[2] + motors[3]);
@@ -98,8 +101,8 @@ void QuadcopterPhysics::update(float angles[3], float motors[4], float deltaSeco
         forwardSpeed += thrust * PARAM_VELOCITY_TRANSLATE_SCALE * r02;
     }
 
-    // Integrate vertical speed to get verticalPosition
-    verticalPosition += verticalSpeed * deltaSeconds;
+    // Integrate vertical speed to get altitude
+    altitude += verticalSpeed * deltaSeconds;
 }
 
 float QuadcopterPhysics::motorsToAngularVelocity(float motors[4], int a, int b, int c, int d)

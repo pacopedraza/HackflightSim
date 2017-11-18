@@ -130,10 +130,10 @@ void AHackflightSimVehicle::Tick(float deltaSeconds)
         hackflight.update();
 
         // Rotate copter in simulation, after converting radians to degrees
-        AddActorLocalRotation(deltaSeconds * FRotator(physics.pitchSpeed, physics.yawSpeed, physics.rollSpeed) * (180/M_PI));
+        AddActorLocalRotation(deltaSeconds * FRotator(physics.angularSpeeds[1], physics.angularSpeeds[2], physics.angularSpeeds[0]) * (180/M_PI));
 
         // Send current physical state to board
-        board->updatePhysics(physics.rollSpeed, physics.pitchSpeed, physics.yawSpeed, physics.verticalPosition, deltaSeconds);
+        board->updatePhysics(physics.angularSpeeds, physics.altitude, deltaSeconds);
 
         // Update physics
         physics.update(board->angles, board->motors, deltaSeconds);
