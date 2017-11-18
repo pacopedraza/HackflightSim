@@ -40,6 +40,11 @@ along with HackflightSim.  If not, see <http://www.gnu.org/licenses/>.
 #define _USE_MATH_DEFINES
 #include <math.h>
 
+// Physics support ------------------------------------------------
+
+#include "QuadcopterPhysics.h"
+QuadcopterPhysics physics;
+
 // Hackflight support ---------------------------------------------
 
 // Main firmware
@@ -94,6 +99,9 @@ AHackflightSimVehicle::AHackflightSimVehicle()
 	motors[2] = new HackflightSimMotor(this, VehicleMesh, PARAM_MOTOR_REAR_X, PARAM_MOTOR_LEFT_Y,   -1, 2);
 	motors[3] = new HackflightSimMotor(this, VehicleMesh, PARAM_MOTOR_FRONT_X, PARAM_MOTOR_LEFT_Y,  +1, 3);
 
+    // Initialize physics
+    physics.init();
+
 	// Create new SimBoard object
 	board = new hf::SimBoard();
 
@@ -115,20 +123,23 @@ void AHackflightSimVehicle::Tick(float deltaSeconds)
 	}
 	
     // During collision recovery, vehicle is not controlled by firmware
-    if (!board->handlingCollision(deltaSeconds)) {
+    if (!physics.handlingCollision(deltaSeconds)) {
 
         // Update our flight controller
         hackflight.update();
 
         // Rotate copter in simulation, after converting radians to degrees
-        AddActorLocalRotation(deltaSeconds * FRotator(board->pitchSpeed, board->yawSpeed, board->rollSpeed) * (180/M_PI));
+        AddActorLocalRotation(deltaSeconds * FRotator(physics.pitchSpeed, physics.yawSpeed, physics.rollSpeed) * (180/M_PI));
+
+        // Send current physical state to board
+        board->updatePhysics(physics.rollSpeed, physics.pitchSpeed, physics.yawSpeed, physics.verticalPosition, deltaSeconds);
 
         // Update physics
-        board->updatePhysics(deltaSeconds);
+        physics.update(board->angles, board->motors, deltaSeconds);
     }
 
     // Compute current translation movement
-    const FVector LocalMove = FVector(board->forwardSpeed*deltaSeconds, board->lateralSpeed*deltaSeconds, board->verticalSpeed*deltaSeconds); 
+    const FVector LocalMove = FVector(physics.forwardSpeed*deltaSeconds, physics.lateralSpeed*deltaSeconds, physics.verticalSpeed*deltaSeconds); 
 
     // Move copter (UE4 uses cm, so multiply by 100 first)
     AddActorLocalOffset(100*LocalMove, true);
@@ -154,7 +165,7 @@ void AHackflightSimVehicle::NotifyHit(
 {
     Super::NotifyHit(MyComp, Other, OtherComp, bSelfMoved, HitLocation, HitNormal, NormalImpulse, Hit);
 
-    board->notifyHit();
+    physics.notifyHit();
 }
 
 // Cycles among our three cameras
