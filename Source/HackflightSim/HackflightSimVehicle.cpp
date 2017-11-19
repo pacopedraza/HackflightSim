@@ -134,6 +134,10 @@ void AHackflightSimVehicle::Tick(float deltaSeconds)
 
         // Update physics
         physics.update(board->angles, board->motors, deltaSeconds);
+
+		// Spin props
+		for (int k = 0; k<4; ++k)
+			motors[k]->rotate(board->motors[k]);
     }
  
 	// Rotate copter in simulation, after converting radians to degrees
@@ -141,10 +145,6 @@ void AHackflightSimVehicle::Tick(float deltaSeconds)
 
 	// Move copter (UE4 uses cm, so multiply by 100 first)
     AddActorLocalOffset(100*deltaSeconds*FVector(physics.forwardSpeed, physics.lateralSpeed, physics.verticalSpeed), true);
-
-    // Spin props
-    for (int k=0; k<4; ++k)
-        motors[k]->rotate(board->motors[k]);
 
     // Call any parent class Tick implementation
     Super::Tick(deltaSeconds);
