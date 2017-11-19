@@ -56,7 +56,7 @@ hf::Hackflight hackflight;
 
 
 // PID tuning
-#include "HackflightSimModel.h"
+#include <models/sim.h>
 
 // Pawn methods ---------------------------------------------------
 
