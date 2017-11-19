@@ -129,16 +129,17 @@ void AHackflightSimVehicle::Tick(float deltaSeconds)
         // Update our flight controller
         hackflight.update();
 
-        // Rotate copter in simulation, after converting radians to degrees
-        AddActorLocalRotation(deltaSeconds * FRotator(physics.angularSpeeds[1], physics.angularSpeeds[2], physics.angularSpeeds[0]) * (180/M_PI));
-
         // Send current physical state to board
         board->updatePhysics(physics.angularSpeeds, physics.altitude, deltaSeconds);
 
         // Update physics
         physics.update(board->angles, board->motors, deltaSeconds);
     }
-    // Move copter (UE4 uses cm, so multiply by 100 first)
+ 
+	// Rotate copter in simulation, after converting radians to degrees
+	AddActorLocalRotation(deltaSeconds * FRotator(physics.angularSpeeds[1], physics.angularSpeeds[2], physics.angularSpeeds[0]) * (180 / M_PI));
+
+	// Move copter (UE4 uses cm, so multiply by 100 first)
     AddActorLocalOffset(100*deltaSeconds*FVector(physics.forwardSpeed, physics.lateralSpeed, physics.verticalSpeed), true);
 
     // Spin props
