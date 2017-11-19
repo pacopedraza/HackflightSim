@@ -39,7 +39,6 @@ void QuadcopterPhysics::init(void)
 
         flying = false;
         collidingSeconds = 0;
-        verticalAcceleration = 0;
 }
 
 
@@ -89,7 +88,7 @@ void QuadcopterPhysics::update(float angles[3], float motors[4], float deltaSeco
     // Overall vertical force = thrust - gravity
     // We first multiply by the sign of the vertical world coordinate direction, because AddActorLocalOffset()
     // will upside-down vehicle rise on negative velocity.
-    verticalAcceleration = (r22 < 0 ? -1 : +1) * (r22*thrust - 9.80665);
+    float verticalAcceleration = (r22 < 0 ? -1 : +1) * (r22*thrust - 9.80665);
 
     // Once there's enough thrust, we're flying
     if (verticalAcceleration > 0) {

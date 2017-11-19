@@ -40,9 +40,6 @@ class QuadcopterPhysics {
         float lateralSpeed;
         float verticalSpeed;
 
-		// Vertical acceleration in meters per second per second
-		float verticalAcceleration;
-
         // Vertical position in meters
         float altitude;
 
