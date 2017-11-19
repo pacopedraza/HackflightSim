@@ -103,8 +103,8 @@ AHackflightSimVehicle::AHackflightSimVehicle()
     // Initialize physics
     physics.init();
 
-	// Create new SimBoard object
-	board = new hf::SimBoard();
+	// Create new SimBoard object, using 8333 microseconds (120 frames per second) as IMU loop time
+	board = new hf::SimBoard(8333);
 
 	// Start Hackflight firmware
 	hackflight.init(board, new hf::Controller(), new hf::SimModel());

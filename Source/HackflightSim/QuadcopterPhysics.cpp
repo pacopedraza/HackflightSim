@@ -21,6 +21,11 @@
 #include "QuadcopterPhysics.h"
 #include "HackflightSimParams.h"
 
+#include <stdint.h>
+#include <math.h>
+
+#include <debug.hpp>
+
 void QuadcopterPhysics::init(void)
 {
         forwardSpeed = 0;
@@ -84,7 +89,7 @@ void QuadcopterPhysics::update(float angles[3], float motors[4], float deltaSeco
     // Overall vertical force = thrust - gravity
     // We first multiply by the sign of the vertical world coordinate direction, because AddActorLocalOffset()
     // will upside-down vehicle rise on negative velocity.
-    verticalAcceleration = (r22 < 0 ? -1 : +1) * (r22*thrust - GRAVITY);
+    verticalAcceleration = (r22 < 0 ? -1 : +1) * (r22*thrust - 9.80665);
 
     // Once there's enough thrust, we're flying
     if (verticalAcceleration > 0) {

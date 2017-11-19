@@ -40,6 +40,9 @@ class QuadcopterPhysics {
         float lateralSpeed;
         float verticalSpeed;
 
+		// Vertical acceleration in meters per second per second
+		float verticalAcceleration;
+
         // Vertical position in meters
         float altitude;
 
@@ -48,17 +51,11 @@ class QuadcopterPhysics {
 
     private:
 
-        // Gravitational constant 
-        static constexpr float GRAVITY = 9.80665;
-
         // Starts out false, then true once some thrust is applied, to avoid treating initial floor contact as a collision
         bool flying;
 
         // Counts down time during which simulation is taken over by collision recovery
         float collidingSeconds;
-
-        // Vertical acceleration in meters per second per second
-        float verticalAcceleration;
 
         float motorsToAngularVelocity(float motors[4], int a, int b, int c, int d);
 
