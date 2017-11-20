@@ -112,6 +112,7 @@ AHackflightSimVehicle::AHackflightSimVehicle()
 		angularSpeeds[k] = 0;
 		linearSpeeds[k] = 0;
 	}
+	flying = false;
 }
 
 void AHackflightSimVehicle::Tick(float deltaSeconds)
@@ -141,7 +142,7 @@ void AHackflightSimVehicle::Tick(float deltaSeconds)
 		float motorValues[4];
 
         // Send current physical state to board
-		board->getState(angularSpeeds, linearSpeeds, motorValues);
+		board->getState(angularSpeeds, linearSpeeds, motorValues, flying);
 
 		// Spin props
 		for (int k = 0; k<4; ++k)
@@ -172,13 +173,14 @@ void AHackflightSimVehicle::NotifyHit(
     Super::NotifyHit(MyComp, Other, OtherComp, bSelfMoved, HitLocation, HitNormal, NormalImpulse, Hit);
 
 	// XXX should pass other stuff, like location, other object, etc.
-    collision.notifyHit(angularSpeeds, linearSpeeds);
+	if (flying) {
+		collision.notifyHit(angularSpeeds, linearSpeeds);
+	}
 }
 
 // Cycles among our three cameras
 void AHackflightSimVehicle::cycleCamera(void)
 {
-
     activeCameraIndex = (activeCameraIndex + 1) % 3;
 
     switch (activeCameraIndex) {

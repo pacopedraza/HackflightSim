@@ -89,6 +89,7 @@ private:
 	// Vehicle state
 	float angularSpeeds[3];
 	float linearSpeeds[3];
+	bool flying;
 
 	// Hackfight Board implementation
 	hf::SimBoard * board;
