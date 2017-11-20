@@ -40,11 +40,6 @@ along with HackflightSim.  If not, see <http://www.gnu.org/licenses/>.
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-// Physics support ------------------------------------------------
-
-#include "QuadcopterPhysics.h"
-QuadcopterPhysics physics;
-
 // Hackflight support ---------------------------------------------
 
 // Main firmware
@@ -54,9 +49,12 @@ hf::Hackflight hackflight;
 // Controller input
 #include <receivers/sim.hpp>
 
-
 // PID tuning
 #include <models/sim.h>
+
+// Collision simulation -------------------------------------------
+#include "HackflightSimCollision.h"
+Collision collision;
 
 // Pawn methods ---------------------------------------------------
 
@@ -100,14 +98,20 @@ AHackflightSimVehicle::AHackflightSimVehicle()
 	motors[2] = new HackflightSimMotor(this, VehicleMesh, PARAM_MOTOR_REAR_X, PARAM_MOTOR_LEFT_Y,   -1, 2);
 	motors[3] = new HackflightSimMotor(this, VehicleMesh, PARAM_MOTOR_FRONT_X, PARAM_MOTOR_LEFT_Y,  +1, 3);
 
-    // Initialize physics
-    physics.init();
+    // Initialize collision physics
+    collision.init();
 
-	// Create new SimBoard object, using 8333 microseconds (120 frames per second) as IMU loop time
-	board = new hf::SimBoard(8333);
+	// Create new SimBoard object, using 120 Hz as IMU loop speed
+	board = new hf::SimBoard(1.f/120);
 
 	// Start Hackflight firmware
 	hackflight.init(board, new hf::Controller(), new hf::SimModel());
+
+	// Start motionless
+	for (uint8_t k = 0; k < 3; ++k) {
+		angularSpeeds[k] = 0;
+		linearSpeeds[k] = 0;
+	}
 }
 
 void AHackflightSimVehicle::Tick(float deltaSeconds)
@@ -122,29 +126,33 @@ void AHackflightSimVehicle::Tick(float deltaSeconds)
 		}
 		keyDownTime = 0;
 	}
-	
+
     // During collision recovery, vehicle is not controlled by firmware
-    if (!physics.handlingCollision(deltaSeconds)) {
+	if (collision.handlingCollision(deltaSeconds)) {
+
+		collision.getState(angularSpeeds, linearSpeeds);
+	}
+
+	else {
 
         // Update our flight controller
         hackflight.update();
 
-        // Send current physical state to board
-        board->updatePhysics(physics.angularSpeeds, physics.altitude, deltaSeconds);
+		float motorValues[4];
 
-        // Update physics
-        physics.update(board->angles, board->motors, deltaSeconds);
+        // Send current physical state to board
+		board->getState(angularSpeeds, linearSpeeds, motorValues);
 
 		// Spin props
 		for (int k = 0; k<4; ++k)
-			motors[k]->rotate(board->motors[k]);
+			motors[k]->rotate(motorValues[k]);
     }
  
 	// Rotate copter in simulation, after converting radians to degrees
-	AddActorLocalRotation(deltaSeconds * FRotator(physics.angularSpeeds[1], physics.angularSpeeds[2], physics.angularSpeeds[0]) * (180 / M_PI));
+	AddActorLocalRotation(deltaSeconds * FRotator(angularSpeeds[1], angularSpeeds[2], angularSpeeds[0]) * (180 / M_PI));
 
 	// Move copter (UE4 uses cm, so multiply by 100 first)
-    AddActorLocalOffset(100*deltaSeconds*FVector(physics.forwardSpeed, physics.lateralSpeed, physics.verticalSpeed), true);
+    AddActorLocalOffset(100*deltaSeconds*FVector(linearSpeeds[0], linearSpeeds[1], linearSpeeds[2]), true);
 
     // Call any parent class Tick implementation
     Super::Tick(deltaSeconds);
@@ -163,7 +171,8 @@ void AHackflightSimVehicle::NotifyHit(
 {
     Super::NotifyHit(MyComp, Other, OtherComp, bSelfMoved, HitLocation, HitNormal, NormalImpulse, Hit);
 
-    physics.notifyHit();
+	// XXX should pass other stuff, like location, other object, etc.
+    collision.notifyHit(angularSpeeds, linearSpeeds);
 }
 
 // Cycles among our three cameras

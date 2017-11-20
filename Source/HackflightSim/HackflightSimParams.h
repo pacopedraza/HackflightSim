@@ -40,6 +40,3 @@ static const float PARAM_THRUST_SCALE = 5.f;
 static const float PARAM_VELOCITY_ROTATE_SCALE    = 1.75;
 static const float PARAM_VELOCITY_TRANSLATE_SCALE = 0.05f;
 
-// Controls duration and extent of bounce-back on collision
-static const float PARAM_COLLISION_SECONDS    = 1.0f;
-static const float PARAM_COLLISION_BOUNCEBACK = 0.1f;

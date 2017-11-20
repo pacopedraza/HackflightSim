@@ -86,6 +86,10 @@ private:
 	// Motors, props
 	HackflightSimMotor * motors[4];
 
+	// Vehicle state
+	float angularSpeeds[3];
+	float linearSpeeds[3];
+
 	// Hackfight Board implementation
 	hf::SimBoard * board;
 
