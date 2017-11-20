@@ -27,8 +27,8 @@
 
 
  // Controls duration and extent of bounce-back on collision
-static const float COLLISION_SECONDS = 3.0f;
-static const float COLLISION_BOUNCEBACK = 0.1f;
+static const float COLLISION_SECONDS    = 1.0f;
+static const float COLLISION_BOUNCEBACK = 0.2f;
 
 void Collision::init(void)
 {
