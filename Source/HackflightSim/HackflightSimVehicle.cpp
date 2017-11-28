@@ -102,7 +102,7 @@ AHackflightSimVehicle::AHackflightSimVehicle()
     collision.init();
 
 	// Create new SimBoard object, using 120 Hz as IMU loop speed
-	board = new hf::SimBoard(1.f/120);
+	board = new hf::SimBoard();
 
 	// Start Hackflight firmware
 	hackflight.init(board, new hf::Controller(), new hf::SimModel());
@@ -148,12 +148,13 @@ void AHackflightSimVehicle::Tick(float deltaSeconds)
 		for (int k = 0; k<4; ++k)
 			motors[k]->rotate(motorValues[k]);
     }
- 
+
 	// Rotate copter in simulation, after converting radians to degrees
 	AddActorLocalRotation(deltaSeconds * FRotator(angularSpeeds[1], angularSpeeds[2], angularSpeeds[0]) * (180 / M_PI));
 
 	// Move copter (UE4 uses cm, so multiply by 100 first)
     AddActorLocalOffset(100*deltaSeconds*FVector(linearSpeeds[0], linearSpeeds[1], linearSpeeds[2]), true);
+	
 
     // Call any parent class Tick implementation
     Super::Tick(deltaSeconds);
