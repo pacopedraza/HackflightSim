@@ -101,7 +101,7 @@ AHackflightSimVehicle::AHackflightSimVehicle()
     // Initialize collision physics
     collision.init();
 
-	// Create new SimBoard object, using 120 Hz as IMU loop speed
+	// Create new SimBoard object
 	board = new hf::SimBoard();
 
 	// Start Hackflight firmware
