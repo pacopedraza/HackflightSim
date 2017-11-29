@@ -47,7 +47,7 @@ along with HackflightSim.  If not, see <http://www.gnu.org/licenses/>.
 hf::Hackflight hackflight;
 
 // Controller input
-#include <receivers/sim.hpp>
+#include <receivers/sim/windows.hpp>
 
 // PID tuning
 #include <models/sim.h>
@@ -55,6 +55,10 @@ hf::Hackflight hackflight;
 // Collision simulation -------------------------------------------
 #include "HackflightSimCollision.h"
 Collision collision;
+
+// Board simulation
+#include <boards/sim/windows-app.hpp>
+hf::SimBoard board;
 
 // Pawn methods ---------------------------------------------------
 
@@ -102,10 +106,10 @@ AHackflightSimVehicle::AHackflightSimVehicle()
     collision.init();
 
 	// Create new SimBoard object
-	board = new hf::SimBoard();
+	//board = new hf::SimBoard();
 
 	// Start Hackflight firmware
-	hackflight.init(board, new hf::Controller(), new hf::SimModel());
+	hackflight.init(&board, new hf::Controller(), new hf::SimModel());
 
 	// Start motionless
 	for (uint8_t k = 0; k < 3; ++k) {
@@ -142,7 +146,7 @@ void AHackflightSimVehicle::Tick(float deltaSeconds)
 		float motorValues[4];
 
         // Send current physical state to board
-		board->getState(angularSpeeds, linearSpeeds, motorValues, flying);
+		board.getState(angularSpeeds, linearSpeeds, motorValues, flying);
 
 		// Spin props
 		for (int k = 0; k<4; ++k)

@@ -27,8 +27,6 @@ along with HackflightSim.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "HackflightSimMotor.h"
 
-#include <boards/sim.hpp>
-
 #include "HackflightSimVehicle.generated.h"
 
 UCLASS(Config=Game)
@@ -90,9 +88,6 @@ private:
 	float angularSpeeds[3];
 	float linearSpeeds[3];
 	bool flying;
-
-	// Hackfight Board implementation
-	hf::SimBoard * board;
 
 	// Creates a camera and associated spring-arm
     void createCameraWithSpringArm(
