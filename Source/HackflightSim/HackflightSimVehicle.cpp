@@ -103,9 +103,6 @@ AHackflightSimVehicle::AHackflightSimVehicle()
     // Initialize collision physics
     collision.init();
 
-	// Create new SimBoard object
-	//board = new hf::SimBoard();
-
 	// Start Hackflight firmware
 	hackflight.init(&board, new hf::Controller(), new hf::SimModel());
 
