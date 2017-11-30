@@ -34,7 +34,7 @@ static const float PARAM_MOTOR_RIGHT_Y = +2.8f;
 static const float PARAM_MOTOR_LEFT_Y  = -4.7f;
 
 // Scales up thrust to radians per second (substitutes for mass, torque, etc.)
-static const float PARAM_THRUST_SCALE = 5.f;
+//static const float PARAM_THRUST_SCALE = 5.f;
 
 // Controls "snappiness" of response
 static const float PARAM_VELOCITY_ROTATE_SCALE    = 1.75;

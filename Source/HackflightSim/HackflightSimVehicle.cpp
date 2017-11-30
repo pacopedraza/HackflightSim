@@ -31,10 +31,8 @@ along with HackflightSim.  If not, see <http://www.gnu.org/licenses/>.
 #include "Engine/World.h"
 #include "Engine/StaticMesh.h"
 
-// Edit this file to adjust physics
+// Edit this file to adjust
 #include "HackflightSimParams.h"
-
-// Debugging support ---------------------------------------------
 
 // Math support
 #define _USE_MATH_DEFINES
@@ -50,7 +48,7 @@ hf::Hackflight hackflight;
 #include <receivers/sim/windows.hpp>
 
 // PID tuning
-#include <models/sim.h>
+#include <models/sim.hpp>
 
 // Collision simulation -------------------------------------------
 #include "HackflightSimCollision.h"
