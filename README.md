@@ -44,7 +44,7 @@ controllers:
 ## Toolchain
 
 You will need Unreal Engine 4 (UE4) and Visual Studio Community.  We are attempting to use the latest versions of
-both, which as the time of this writing are UE 4.17.2 and Visual Studio Community 2017.  If you don't have
+both, which as the time of this writing are UE 4.18.1 and Visual Studio Community 2017.  If you don't have
 UE4 or Visual Studio 2017 installed, these 
 [instructions](https://docs.unrealengine.com/latest/INT/Programming/Development/VisualStudioSetup/#visualstudio2017users) 
 will help get you started. If you've already been using C++ to develop video games with
