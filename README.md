@@ -59,7 +59,7 @@ Linux users should follow these [instructions](https://wiki.unrealengine.com/Bui
 to build your projects from the bash command line, follow these
 [instructions](https://forums.unrealengine.com/development-discussion/c-gameplay-programming/97022-linux-how-to-compile-c-scripts-from-terminal) to add a bash-shell command allowing you to do this.
 
-# Setup 
+# Build
 
 You should first clone the HackflightSim repository into your <b>Documents/Unreal Projects</b> folder, creating
 that folder if it doesn't already exist.
@@ -75,7 +75,7 @@ At this point, you should edit the lines in
 (If you're a Windows user and prefer to do all your editing in VisualStudio, you can do this after you've built the 
 VisualStudio sln file in the next step.)
 
-# Windows
+## Windows
 
 Navigate to the HackflightSim folder, right-click on
 <b>HackflightSim.uproject</b>, and select the menu item <b>Generate Visual Studio project files</b>.  This
@@ -86,7 +86,7 @@ the version of Visual Studio you've installed (see discussion
 launch Visual Studio, it can take several minutes to parse up all the C++ source
 code for the UE4 engine.
 
-# Linux
+## Linux
 
 Once you've got the project set up correctly, hitting the <b>F5</b> key should build the project and launch 
 Unreal Editor.  Double-click on a map from the ones available in the Content panel on the left, hit play,
