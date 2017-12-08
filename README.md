@@ -28,6 +28,7 @@ different kinds of vehicles.
 We are currently developing HackflightSim on the following two platforms (both using solid-state drives):
 * HP Z440 workstation with 32GB RAM and NVIDIA GeForce GTX 1080 Ti, running Windows 10
 * HP Z230 workstation with 16GB RAM and NVIDIA Quadro K620 GPU running Ubuntu 16.04
+
 It may however be possible to develop on a less &ldquo;loaded&rdquo;
 machine &ndash; see [here](https://docs.unrealengine.com/latest/INT/GettingStarted/RecommendedSpecifications/)
 for the minimum requirements recommended by Unreal Engine.
