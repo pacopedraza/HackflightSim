@@ -22,13 +22,15 @@ using UnrealBuildTool;
 
 public class HackflightSim : ModuleRules
 {
-	public HackflightSim(ReadOnlyTargetRules Target) : base(Target)
-	{
-		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
+    public HackflightSim(ReadOnlyTargetRules Target) : base(Target)
+    {
+        PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" });
-               
-                //PrivateIncludePaths.Add("/home/slevy/Documents/Arduino/libraries/Hackflight/src");
-                PrivateIncludePaths.Add("C:\\Users\\levys\\Documents\\Arduino\\libraries\\Hackflight\\src");
+        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" });
+
+
+        // Un-comment and edit one of these lines to point to your Hackflight/src library
+        //PrivateIncludePaths.Add("/home/slevy/Documents/Arduino/libraries/Hackflight/src");         // Linux
+        PrivateIncludePaths.Add("C:\\Users\\levys\\Documents\\Arduino\\libraries\\Hackflight\\src"); // Windows
     }
 }
