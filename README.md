@@ -73,7 +73,7 @@ creating that folder if it doesn't exist.
 At this point, you should edit the lines in
 [HackflightSim/Source/HackflightSim/HackflightSim.Build.cs](https://github.com/simondlevy/HackflightSim/blob/master/Source/HackflightSim/HackflightSim.Build.cs#L32-L34) that will tell the UnrealEditor4 compiler where to find your Hackflight source code.
 (If you're a Windows user and prefer to do all your editing in VisualStudio, you can do this after you've built the 
-VisualStudio sln file in the next step.)
+VisualStudio .sln file in the next step.)
 
 ## Windows
 
