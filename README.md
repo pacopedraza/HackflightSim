@@ -88,6 +88,21 @@ code for the UE4 engine.
 
 ## Linux
 
-Once you've got the project set up correctly, hitting the <b>F5</b> key should build the project and launch 
-Unreal Editor.  Double-click on a map from the ones available in the Content panel on the left, hit play,
-and you should be flying!  You can use the spacebar to cycle through different camera views.
+Do the following in your bash shell:
+
+<pre>
+% cd ~/Documents/UnrealProjects/HackflightSim
+% unrealbuild ./HackflightSim.Build.cs
+</pre>
+
+Then launch UnrealEngineEditor and open <b>HackflightSim.uproject</b>.  If you're asked about making
+a copy to deal with version incompatibility (4.18.1 vs. 4.18.2), click Okay.  Once you've done that,
+it can take several minutes for the UE4 Editor to build your project.
+
+# Launch and fly!
+
+Once you've got the project built and your controller plugged in, hitting the
+<b>F5</b> key should build the project and launch Unreal Editor.  Double-click
+on a map from the ones available in the Content panel on the left or at bottom, click the play button,
+and you should be flying!  You can use the spacebar to cycle through different
+camera views.
