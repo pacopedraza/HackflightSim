@@ -54,9 +54,11 @@ older versions of these tools (Visual Studio 2015, UE 4.16), we recommend sticki
 the differences between Visual Studio 2015 and 2017 can cause problems for UE4 if you're not careful (inability
 to generate a .sln file from a .uproject file, inability to compile source code, etc.).
 
-Linux users should follow these [instructions)[https://wiki.unrealengine.com/Building_On_Linux].
+Linux users should follow these [instructions)[https://wiki.unrealengine.com/Building\_On\_Linux].  If (like us) you like
+to build your projects from the bash command line, follow these
+[instructions](https://forums.unrealengine.com/development-discussion/c-gameplay-programming/97022-linux-how-to-compile-c-scripts-from-terminal) to add a bash-shell command allowing you to do this.
 
-# Launching HackflightSim
+# Setup 
 
 You should first clone the HackflightSim repository into your <b>Documents/Unreal Projects</b> folder, creating
 that folder if it doesn't already exist.
@@ -67,10 +69,14 @@ Arduino library, to support its primary intended use. So the most sensible way
 to install it is to clone it into your <b>Documents/Arduino/libraries</b> folder,
 creating that folder if it doesn't exist.
 
-At this point, you should edit the file 
-[HackflightSim/Source/HackflightSim/HackflightSim.Build.cs]()
+At this point, you should edit the lines in
+[HackflightSim/Source/HackflightSim/HackflightSim.Build.cs](https://github.com/simondlevy/HackflightSim/blob/master/Source/HackflightSim/HackflightSim.Build.cs#L32-L34) that will tell the UnrealEditor4 compiler where to find your Hackflight source code.
+(If you're a Windows user and prefer to do all your editing in VisualStudio, you can do this after you've built the 
+VisualStudio sln file in the next step.)
 
-Once you've got both of these repositories installed, navigate to the HackflightSim folder, right-click on
+# Windows
+
+Navigate to the HackflightSim folder, right-click on
 <b>HackflightSim.uproject</b>, and select the menu item <b>Generate Visual Studio project files</b>.  This
 should create a file <b>HackflightSim.sln</b> and some new folders.
 If you don't get the new .sln file, it's probably because UE4 cannot find a C++ compiler for
@@ -78,6 +84,10 @@ the version of Visual Studio you've installed (see discussion
 [here](https://docs.unrealengine.com/latest/INT/Programming/Development/VisualStudioSetup/#beforesetting-upyourue4-to-vsworkflow)).  Double-clicking on the .sln file should launch Visual Studio.  The first time you
 launch Visual Studio, it can take several minutes to parse up all the C++ source
 code for the UE4 engine.
+
+# Linux
+
+
 
 <img src="ProjectSettings.png" width=800>
 
