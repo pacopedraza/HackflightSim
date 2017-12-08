@@ -104,4 +104,6 @@ it can take several minutes for the UE4 Editor to build your project.
 
 # Launch and fly!
 
-Double-click on a map from the ones available in the Content panel on the left or at bottom, click the play button, and you should be flying!  You can use the spacebar to cycle through different camera views.
+Double-click on a map from the ones available in the Content panel on the left or at bottom, click the play button, 
+and you're ready to begin. Arm the vehicle with throttle-down / yaw right, then throttle up to fly.
+You can use the spacebar to cycle through different camera views.
