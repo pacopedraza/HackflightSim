@@ -84,7 +84,10 @@ If you don't get the new .sln file, it's probably because UE4 cannot find a C++ 
 the version of Visual Studio you've installed (see discussion 
 [here](https://docs.unrealengine.com/latest/INT/Programming/Development/VisualStudioSetup/#beforesetting-upyourue4-to-vsworkflow)).  Double-clicking on the .sln file should launch Visual Studio.  The first time you
 launch Visual Studio, it can take several minutes to parse up all the C++ source
-code for the UE4 engine.
+code for the UE4 engine.  
+
+Once you've got the project built and your controller plugged in, hitting the
+<b>F5</b> key should build the project and launch Unreal Editor. 
 
 ## Linux
 
@@ -101,8 +104,4 @@ it can take several minutes for the UE4 Editor to build your project.
 
 # Launch and fly!
 
-Once you've got the project built and your controller plugged in, hitting the
-<b>F5</b> key should build the project and launch Unreal Editor.  Double-click
-on a map from the ones available in the Content panel on the left or at bottom, click the play button,
-and you should be flying!  You can use the spacebar to cycle through different
-camera views.
+Double-click on a map from the ones available in the Content panel on the left or at bottom, click the play button, and you should be flying!  You can use the spacebar to cycle through different camera views.
