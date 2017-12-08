@@ -88,10 +88,6 @@ code for the UE4 engine.
 
 # Linux
 
-
-
-<img src="ProjectSettings.png" width=800>
-
 Once you've got the project set up correctly, hitting the <b>F5</b> key should build the project and launch 
 Unreal Editor.  Double-click on a map from the ones available in the Content panel on the left, hit play,
 and you should be flying!  You can use the spacebar to cycle through different camera views.
