@@ -45,7 +45,13 @@ along with HackflightSim.  If not, see <http://www.gnu.org/licenses/>.
 hf::Hackflight hackflight;
 
 // Controller input
+#ifdef _WIN32
 #include <receivers/sim/windows.hpp>
+#include <boards/sim/windows-app.hpp>
+#else
+#include <receivers/sim/linux.hpp>
+#include <boards/sim/linux.hpp>
+#endif
 
 // PID tuning
 #include <models/sim.hpp>
@@ -55,7 +61,6 @@ hf::Hackflight hackflight;
 Collision collision;
 
 // Board simulation
-#include <boards/sim/windows-app.hpp>
 hf::SimBoard board;
 
 // Pawn methods ---------------------------------------------------

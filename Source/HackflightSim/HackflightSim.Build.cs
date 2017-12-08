@@ -27,5 +27,7 @@ public class HackflightSim : ModuleRules
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" });
+               
+                PrivateIncludePaths.Add("/home/slevy/Documents/Arduino/libraries/Hackflight/src");
 	}
 }

@@ -20,8 +20,6 @@ You should have received a copy of the GNU General Public License
 along with HackflightSim.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
-
 #include "HackflightSimMotor.h"
 
 // Edit this file to adjust physics
@@ -78,7 +76,7 @@ HackflightSimMotor::HackflightSimMotor(APawn * vehicle, UStaticMeshComponent* Ve
 	};
 	static FProp4ConstructorStatics Prop4ConstructorStatics;
     
-	this->direction = direction;
+	_direction = direction;
 
 	UStaticMesh *staticPropMesh = nullptr;
 
@@ -101,19 +99,19 @@ HackflightSimMotor::HackflightSimMotor(APawn * vehicle, UStaticMeshComponent* Ve
 
 	// Associate the propeller mesh with a name and object
 	char propMeshName[20];
-	sprintf_s(propMeshName, "Prop%dMesh", index + 1);
+	snprintf(propMeshName, 9, "Prop%dMesh", index + 1);
 	PropMesh = vehicle->CreateDefaultSubobject<UStaticMeshComponent>(propMeshName);
 	PropMesh->SetStaticMesh(staticPropMesh);
 
 	// Associate the motor mesh with a unique name and object
 	char motorMeshName[20];
-	sprintf_s(motorMeshName, "Motor%dMesh", index + 1);	
+	snprintf(motorMeshName, 11, "Motor%dMesh", index + 1);	
 	MotorMesh = vehicle->CreateDefaultSubobject<UStaticMeshComponent>(motorMeshName);
 	MotorMesh->SetStaticMesh(MotorConstructorStatics.MotorMesh.Get());
 
 	// Create a spring arm to connect the motor to the vehicle
 	char motorSpringArmName[20];
-	sprintf_s(motorSpringArmName, "Motor%dSpringArm", index + 1);
+	snprintf(motorSpringArmName, 16, "Motor%dSpringArm", index + 1);
 	MotorSpringArm = vehicle->CreateDefaultSubobject<USpringArmComponent>(motorSpringArmName);
 	MotorSpringArm->SetupAttachment(VehicleMesh);
 	MotorSpringArm->TargetArmLength = 0.f;
@@ -122,7 +120,7 @@ HackflightSimMotor::HackflightSimMotor(APawn * vehicle, UStaticMeshComponent* Ve
 
 	// Create a spring arm to connect the propeller to the motor barrel
 	char propSpringArmName[20];
-	sprintf_s(propSpringArmName, "Prop%dSpringArm", index + 1);
+	snprintf(propSpringArmName, 15, "Prop%dSpringArm", index + 1);
 	PropSpringArm = vehicle->CreateDefaultSubobject<USpringArmComponent>(propSpringArmName);
 	PropSpringArm->SetupAttachment(MotorMesh);
 	PropSpringArm->TargetArmLength = 0.f;
@@ -132,6 +130,6 @@ HackflightSimMotor::HackflightSimMotor(APawn * vehicle, UStaticMeshComponent* Ve
 
 void HackflightSimMotor::rotate(float speed)
 {
-	FRotator PropRotation(0, speed*PARAM_PROP_SPEED*direction, 0);
+	FRotator PropRotation(0, speed*PARAM_PROP_SPEED*_direction, 0);
 	PropMesh->AddLocalRotation(PropRotation);
 }

@@ -35,7 +35,7 @@ private:
     class UStaticMeshComponent* MotorMesh;
     class USpringArmComponent*  MotorSpringArm;
 
-	int8_t direction; // +1 clockwise, -1 counterclockwise
+    int8_t _direction; // +1 clockwise, -1 counterclockwise
 
 public:
 
