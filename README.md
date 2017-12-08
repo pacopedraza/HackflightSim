@@ -4,7 +4,7 @@
 
 HackflightSim is a simple quadcopter flight simulator using the C++ 
 [Hackflight](https://github.com/simondlevy/Hackflight) firmware and Unreal
-Engine 4.  It runs on Windows 10 and Linux.
+Engine 4.  It runs on Windows and Linux.
 
 We began this project using the [V-REP
 platform](https://github.com/simondlevy/Hackflight-VREP) but switched to
