@@ -4,7 +4,7 @@
 
 HackflightSim is a simple quadcopter flight simulator using the C++ 
 [Hackflight](https://github.com/simondlevy/Hackflight) firmware and Unreal
-Engine 4.  
+Engine 4.  It runs on Windows 10 and Linux.
 
 We began this project using the [V-REP
 platform](https://github.com/simondlevy/Hackflight-VREP) but switched to
@@ -18,7 +18,6 @@ HackflightSim differs from AirSim in a few important ways:
 [quadcopters](http://diydrones.com/profiles/blogs/flight-of-the-ladybug).
 * HackflightSim is tiny, using under 500 lines of C++ code for the simulator component.
 * HackflightSim is released under the GPL license, whereas AirSim uses the MIT license.
-* HackflightSim is currently supported only on Windows, whereas AirSim can also be run on Linux.
 * HackflightSim focuses exclusively on quadcopter firmware, whereas AirSim supports deep learning and
 different kinds of vehicles.
 
@@ -26,9 +25,10 @@ different kinds of vehicles.
 
 ## Hardware
 
-We are developing HackflightSim under Windows 10 on an HP Z440 workstation with
-32GB of RAM, a solid-state drive, and and NVIDIA GeForce GTX 1080 Ti graphics
-card.  It may however be possible to develop on a less &ldquo;loaded&rdquo;
+We are currently developing HackflightSim on the following two platforms (both using solid-state drives):
+* HP Z440 workstation with 32GB RAM and NVIDIA GeForce GTX 1080 Ti, running Windows 10
+* HP Z230 workstation with 16GB RAM and NVIDIA Quadro K620 GPU running Ubuntu 16.04
+It may however be possible to develop on a less &ldquo;loaded&rdquo;
 machine &ndash; see [here](https://docs.unrealengine.com/latest/INT/GettingStarted/RecommendedSpecifications/)
 for the minimum requirements recommended by Unreal Engine.
 
@@ -43,14 +43,18 @@ controllers:
 
 ## Toolchain
 
-You will need Unreal Engine 4 (UE4) and Visual Studio Community.  We are attempting to use the latest versions of
-both, which as the time of this writing are UE 4.18.1 and Visual Studio Community 2017.  If you don't have
-UE4 or Visual Studio 2017 installed, these 
+You will need Unreal Engine 4 (UE4). We are attempting to use the latest version, which as of the time of this
+writing is UE4.18.1.  
+
+Windows users will need Visual Studio Community (we're using the latest version, 2017).
+If you don't have UE4 or Visual Studio 2017 installed, these
 [instructions](https://docs.unrealengine.com/latest/INT/Programming/Development/VisualStudioSetup/#visualstudio2017users) 
 will help get you started. If you've already been using C++ to develop video games with
 older versions of these tools (Visual Studio 2015, UE 4.16), we recommend sticking with those, as we've found that
 the differences between Visual Studio 2015 and 2017 can cause problems for UE4 if you're not careful (inability
 to generate a .sln file from a .uproject file, inability to compile source code, etc.).
+
+Linux users should follow these [instructions)[https://wiki.unrealengine.com/Building_On_Linux].
 
 # Launching HackflightSim
 
@@ -63,6 +67,9 @@ Arduino library, to support its primary intended use. So the most sensible way
 to install it is to clone it into your <b>Documents/Arduino/libraries</b> folder,
 creating that folder if it doesn't exist.
 
+At this point, you should edit the file 
+[HackflightSim/Source/HackflightSim/HackflightSim.Build.cs]()
+
 Once you've got both of these repositories installed, navigate to the HackflightSim folder, right-click on
 <b>HackflightSim.uproject</b>, and select the menu item <b>Generate Visual Studio project files</b>.  This
 should create a file <b>HackflightSim.sln</b> and some new folders.
@@ -71,15 +78,6 @@ the version of Visual Studio you've installed (see discussion
 [here](https://docs.unrealengine.com/latest/INT/Programming/Development/VisualStudioSetup/#beforesetting-upyourue4-to-vsworkflow)).  Double-clicking on the .sln file should launch Visual Studio.  The first time you
 launch Visual Studio, it can take several minutes to parse up all the C++ source
 code for the UE4 engine.
-
-After VisualStudio has launched, make sure you have a Solution Explorer window
-visible (usually a panel in the upper-right of the VisualStudio window).  If you don't see the Solution Explorer,
-choose <b>View / Solution Explorer</b> in the Visual Studio menu bar.  Once you can see Solution Explorer,
-you should see a boldfaced item <b>HackflightSim</b> under <i>Solution 'HackflightSim' / Games</i>.  Right-click on the
-this boldfaced item and select the <b>Properties</b> item at the bottom of the popup menu, launching the 
-<b>HackflightSim Property Pages</B> dialog.  Use this dialog as shown below to ensure that your 
-<b>VC++ Include Directories</b> are set to include the location where you installed the Hackflight firmware
-source (in our case, <b>C:\Users\levys\Documents\Arduino\libraries\Hackflight\src</b>.
 
 <img src="ProjectSettings.png" width=800>
 

@@ -28,6 +28,7 @@ public class HackflightSim : ModuleRules
 
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" });
                
-                PrivateIncludePaths.Add("/home/slevy/Documents/Arduino/libraries/Hackflight/src");
-	}
+                //PrivateIncludePaths.Add("/home/slevy/Documents/Arduino/libraries/Hackflight/src");
+                PrivateIncludePaths.Add("C:\\Users\\levys\\Documents\\Arduino\\libraries\\Hackflight\\src");
+    }
 }
