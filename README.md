@@ -55,7 +55,7 @@ older versions of these tools (Visual Studio 2015, UE 4.16), we recommend sticki
 the differences between Visual Studio 2015 and 2017 can cause problems for UE4 if you're not careful (inability
 to generate a .sln file from a .uproject file, inability to compile source code, etc.).
 
-Linux users should follow these (instructions)[https://wiki.unrealengine.com/Building\_On\_Linux].  If (like us) you like
+Linux users should follow these [instructions](https://wiki.unrealengine.com/Building\_On\_Linux).  If (like us) you like
 to build your projects from the bash command line, follow these
 [instructions](https://forums.unrealengine.com/development-discussion/c-gameplay-programming/97022-linux-how-to-compile-c-scripts-from-terminal) to add a bash-shell command allowing you to do this.
 
