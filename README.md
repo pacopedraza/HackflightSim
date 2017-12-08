@@ -65,7 +65,7 @@ You should first clone the HackflightSim repository into your <b>Documents/Unrea
 that folder if it doesn't already exist.
 
 In addition to cloning HackflightSim, you will need the [Hackflight](https://github.com/simondlevy/Hackflight) 
-repository.  Although Hackflight is platform-independent, it is set up as an
+repository.  Although Hackflight is hardware-independent, it is set up as an
 Arduino library, to support its primary intended use. So the most sensible way
 to install it is to clone it into your <b>Documents/Arduino/libraries</b> folder,
 creating that folder if it doesn't exist.
