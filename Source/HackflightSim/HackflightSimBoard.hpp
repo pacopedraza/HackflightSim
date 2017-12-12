@@ -1,6 +1,8 @@
 /*
    HackflihtSimBoard.hpp: Hackflight SimBoard class implementation for Unreal Engine
 
+   Provides Board::outbuf() method that displays debugging text to the game display
+
    Copyright (C) Simon D. Levy 2017
 
    This file is part of HackflightSim.
