@@ -32,10 +32,15 @@
 #include <boards/sim/linux.hpp>
 #endif
 
+static FColor TEXT_COLOR = FColor::Yellow;
+static float  TEXT_SCALE = 2.f;
+
 void hf::Board::outbuf(char * buf)
 {
 	if (GEngine) {
-		GEngine->AddOnScreenDebugMessage(0, 15.0f, FColor::Yellow, FString(buf));
+
+		// 0 = overwrite; 5.0f = arbitrary time to display
+		GEngine->AddOnScreenDebugMessage(0, 5.0f, TEXT_COLOR, FString(buf), true, FVector2D(TEXT_SCALE,TEXT_SCALE));
 	}
 
 }
