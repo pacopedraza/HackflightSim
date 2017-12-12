@@ -3,6 +3,7 @@
 /Intermediate
 /Saved
 /Content/StarterContent
+*.sln
 *.swp
 *.VC.db
 *.suo

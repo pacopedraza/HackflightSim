@@ -30,6 +30,7 @@ along with HackflightSim.  If not, see <http://www.gnu.org/licenses/>.
 #include "GameFramework/SpringArmComponent.h"
 #include "Engine/World.h"
 #include "Engine/StaticMesh.h"
+#include "Engine/Engine.h"
 
 // Edit this file to adjust
 #include "HackflightSimParams.h"
@@ -47,11 +48,12 @@ hf::Hackflight hackflight;
 // Controller input
 #ifdef _WIN32
 #include <receivers/sim/windows.hpp>
-#include <boards/sim/windows-app.hpp>
 #else
 #include <receivers/sim/linux.hpp>
-#include <boards/sim/linux.hpp>
 #endif
+
+// Board simulation
+#include "HackflightSimBoard.hpp"
 
 // PID tuning
 #include <models/sim.hpp>
@@ -121,6 +123,8 @@ AHackflightSimVehicle::AHackflightSimVehicle()
 
 void AHackflightSimVehicle::Tick(float deltaSeconds)
 {
+	hf::Debug::printf("%f", deltaSeconds);
+
 	// Spacebar cycles through cameras
 	if (GetWorld()->GetFirstPlayerController()->GetInputKeyTimeDown(FKey("Spacebar")) > 0) {
 		keyDownTime += deltaSeconds;
