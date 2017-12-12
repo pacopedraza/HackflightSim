@@ -27,28 +27,9 @@
 
 
 #ifdef _WIN32
-void hf::SimBoard::cputime(struct timespec *tv)
-{
-    static time_t startsec;
-
-    int retval = timespec_get(tv, TIME_UTC);
-
-    if (startsec == 0) {
-        startsec = tv->tv_sec;
-    }
-
-    tv->tv_sec -= startsec;
-}
-
+#include <boards/sim/windows.hpp>
 #else
-
-#include <stdio.h>
-
-void hf::SimBoard::cputime(struct timespec * tv)
-{
-    clock_gettime(CLOCK_PROCESS_CPUTIME_ID, tv);
-}
-
+#include <boards/sim/linux.hpp>
 #endif
 
 void hf::Board::outbuf(char * buf)
