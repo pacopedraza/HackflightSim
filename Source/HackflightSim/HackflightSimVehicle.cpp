@@ -123,8 +123,6 @@ AHackflightSimVehicle::AHackflightSimVehicle()
 
 void AHackflightSimVehicle::Tick(float deltaSeconds)
 {
-	hf::Debug::printf("%f", deltaSeconds);
-
 	// Spacebar cycles through cameras
 	if (GetWorld()->GetFirstPlayerController()->GetInputKeyTimeDown(FKey("Spacebar")) > 0) {
 		keyDownTime += deltaSeconds;
