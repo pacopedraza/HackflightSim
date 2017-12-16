@@ -74,7 +74,7 @@ At this point, Linux users should edit the lines in
 [HackflightSim/Source/HackflightSim/HackflightSim.Build.cs](https://github.com/simondlevy/HackflightSim/blob/master/Source/HackflightSim/HackflightSim.Build.cs#L32-L35)
 that will tell the UnrealEditor4 compiler where to find your Hackflight source
 code.  (On Windows, as long as the code is in 
-<b>C:\Users\<i>YOURNAME</i>\Documents\Arduino\libraries\Hackflight\src</b>, you shouldn't need to edit this file.)
+<b>C:\Users\\<i>YOURNAME</i>\Documents\Arduino\libraries\Hackflight\src</b>, you shouldn't need to edit this file.)
 
 ## Windows
 
