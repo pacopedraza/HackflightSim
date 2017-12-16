@@ -71,7 +71,7 @@ to install it is to clone it into your <b>Documents/Arduino/libraries</b> folder
 creating that folder if it doesn't exist.
 
 At this point, Linux users should edit the lines in
-[HackflightSim/Source/HackflightSim/HackflightSim.Build.cs](https://github.com/simondlevy/HackflightSim/blob/master/Source/HackflightSim/HackflightSim.Build.cs#L32-L34)
+[HackflightSim/Source/HackflightSim/HackflightSim.Build.cs](https://github.com/simondlevy/HackflightSim/blob/master/Source/HackflightSim/HackflightSim.Build.cs#L32-L35)
 that will tell the UnrealEditor4 compiler where to find your Hackflight source
 code.  (On Windows, as long as the code is in <b>%USERPROFILE%\Documents\Arduino\libraries\Hackflight\src</b>;
 for example, <b>C:\Users\levys\Documents\Arduino\libraries\Hackflight\src</b>, you shouldn't need to edit this file.)
