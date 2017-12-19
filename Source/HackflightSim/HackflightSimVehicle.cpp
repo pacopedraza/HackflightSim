@@ -147,8 +147,11 @@ void AHackflightSimVehicle::Tick(float deltaSeconds)
 
 		float motorValues[4];
 
-        // Send current physical state to board
-		board.getState(angularSpeeds, linearSpeeds, motorValues, flying);
+        // Get current vehicle state from board
+        board.simGetGyro(angularSpeeds);
+        board.simGetLinearSpeeds(linearSpeeds);
+        board.simGetMotors(motorValues);
+        flying = board.simIsFlying();
 
 		// Spin props
 		for (int k = 0; k<4; ++k)
