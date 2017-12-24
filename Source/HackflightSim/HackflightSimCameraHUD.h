@@ -12,5 +12,14 @@ class HACKFLIGHTSIM_API AHackflightSimCameraHUD : public AHUD
 	GENERATED_BODY()
 
 	virtual void DrawHUD() override;
-		
+
+	const float LEFTX = 1600.f;
+	const float TOPY = 600.f;
+	const float WIDTH = 256.f;
+	const float HEIGHT = 128.f;
+	
+	const FLinearColor BORDER_COLOR = FLinearColor::Yellow;
+	const float BORDER_WIDTH = 2.0f;
+
+	void drawBorderLine(float lx, float uy, float rx, float by);
 };
