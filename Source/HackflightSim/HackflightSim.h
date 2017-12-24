@@ -20,6 +20,6 @@ along with HackfilghtSim.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "Engine.h"
 
-DECLARE_LOG_CATEGORY_EXTERN(LogFlying, Log, All);
+//DECLARE_LOG_CATEGORY_EXTERN(LogFlying, Log, All);

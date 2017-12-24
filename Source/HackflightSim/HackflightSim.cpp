@@ -23,4 +23,4 @@ along with HackflightSim.  If not, see <http://www.gnu.org/licenses/>.
 
 IMPLEMENT_PRIMARY_GAME_MODULE(FDefaultGameModuleImpl, HackflightSim, "HackflightSim");
 
-DEFINE_LOG_CATEGORY(LogFlying)
+//DEFINE_LOG_CATEGORY(LogFlying)
