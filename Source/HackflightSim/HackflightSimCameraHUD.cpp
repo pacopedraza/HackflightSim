@@ -1,5 +1,5 @@
 /*
-   HackflihtSimCameraHUD.hpp: heads-up display implementation
+   HackflihtSimCameraHUD.cpp: heads-up display implementation
 
    Copyright (C) Simon D. Levy 2017
 
