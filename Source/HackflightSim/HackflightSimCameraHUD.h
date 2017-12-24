@@ -21,5 +21,5 @@ class HACKFLIGHTSIM_API AHackflightSimCameraHUD : public AHUD
 	const FLinearColor BORDER_COLOR = FLinearColor::Yellow;
 	const float BORDER_WIDTH = 2.0f;
 
-	void drawBorderLine(float lx, float uy, float rx, float by);
+	void drawBorder(float lx, float uy, float rx, float by);
 };
