@@ -95,8 +95,8 @@ Once you've got the project built and your controller plugged in, hitting the
 Do the following in your bash shell:
 
 <pre>
-% cd ~/Documents/UnrealProjects/HackflightSim
-% unrealbuild ./HackflightSim.Build.cs
+% cd ~/Documents/Unreal Projects/HackflightSim
+% unrealbuild HackflightSim.uproject
 </pre>
 
 Then launch UnrealEngineEditor and open <b>HackflightSim.uproject</b>.  If you're asked about making
