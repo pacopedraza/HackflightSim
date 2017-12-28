@@ -22,12 +22,16 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
+#include "Engine/TextureRenderTarget2D.h"
+
 #include "HackflightSimCameraHUD.generated.h"
 
 UCLASS(Config = Game)
 class HACKFLIGHTSIM_API AHackflightSimCameraHUD : public AHUD
 {
 	GENERATED_BODY()
+
+	AHackflightSimCameraHUD();
 
 	virtual void DrawHUD() override;
 
@@ -40,4 +44,11 @@ class HACKFLIGHTSIM_API AHackflightSimCameraHUD : public AHUD
 	const float BORDER_WIDTH = 2.0f;
 
 	void drawBorder(float lx, float uy, float rx, float by);
+
+	/** Access to Vision camera */
+	class UCameraComponent* VisionCameraComponent;
+	UTextureRenderTarget2D* VisionTextureRenderTarget;
+	UTexture2D* VisionTexture;
+	FRenderTarget* VisionRenderTarget;
+	TArray<FColor> VisionSurfData;
 };

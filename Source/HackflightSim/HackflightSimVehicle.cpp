@@ -107,20 +107,6 @@ AHackflightSimVehicle::AHackflightSimVehicle()
 	motors[2] = new HackflightSimMotor(this, VehicleMesh, PARAM_MOTOR_REAR_X, PARAM_MOTOR_LEFT_Y,   -1, 2);
 	motors[3] = new HackflightSimMotor(this, VehicleMesh, PARAM_MOTOR_FRONT_X, PARAM_MOTOR_LEFT_Y,  +1, 3);
 
-	// Get Vision render target from blueprint
-	static ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D> VisionTexObj(TEXT("/Game/Hackflight/T_Vision"));
-	VisionTextureRenderTarget = VisionTexObj.Object;
-
-	// Creates Texture2D to store VisionTex content
-	//VisionTexture = UTexture2D::CreateTransient(VisionTextureRenderTarget->SizeX, VisionTextureRenderTarget->SizeY, PF_B8G8R8A8);
-
-#if WITH_EDITORONLY_DATA
-	//VisionTexture->MipGenSettings = TMGS_NoMipmaps;
-#endif
-	//VisionTexture->SRGB = VisionTextureRenderTarget->SRGB;
-
-	//VisionRenderTarget = VisionTextureRenderTarget->GameThread_GetRenderTargetResource();
-
     // Initialize collision physics
     collision.init();
 
@@ -139,8 +125,6 @@ void AHackflightSimVehicle::Tick(float deltaSeconds)
 {
 	// Call any parent class Tick implementation
 	Super::Tick(deltaSeconds);
-
-	hf::Debug::printf("%p", VisionTextureRenderTarget);
 
 	// Spacebar cycles through cameras
 	if (GetWorld()->GetFirstPlayerController()->GetInputKeyTimeDown(FKey("Spacebar")) > 0) {
