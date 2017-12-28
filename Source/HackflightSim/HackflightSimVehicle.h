@@ -24,6 +24,7 @@ along with HackflightSim.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "Engine/TextureRenderTarget2D.h"
 
 #include "HackflightSimMotor.h"
 
@@ -61,6 +62,15 @@ class AHackflightSimVehicle : public APawn
 	// Spring arm for FPV camera
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* FpvCameraSpringArm;
+
+	/** Access to Vision camera */
+	class UCameraComponent* VisionCameraComponent;
+
+	/** Access to Vision pixels */
+	UTextureRenderTarget2D* VisionTextureRenderTarget;
+	UTexture2D* VisionTexture;
+	FRenderTarget* VisionRenderTarget;
+	TArray<FColor> VisionSurfData;
 
 public:
 
