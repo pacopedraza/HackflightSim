@@ -21,7 +21,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/HUD.h"
+#include "Engine.h"
+#include "GameFramework/Character.h"
 #include "Engine/TextureRenderTarget2D.h"
 
 #include "HackflightSimCameraHUD.generated.h"
@@ -46,9 +47,7 @@ class HACKFLIGHTSIM_API AHackflightSimCameraHUD : public AHUD
 	void drawBorder(float lx, float uy, float rx, float by);
 
 	/** Access to Vision camera */
-	class UCameraComponent* VisionCameraComponent;
 	UTextureRenderTarget2D* VisionTextureRenderTarget;
-	UTexture2D* VisionTexture;
 	FRenderTarget* VisionRenderTarget;
 	TArray<FColor> VisionSurfData;
 };

@@ -19,9 +19,7 @@
  */
 
 #include "HackflightSimCameraHUD.h"
-#include "UObject/ConstructorHelpers.h"
-#include "Engine/World.h"
-#include "Engine/Engine.h"
+
 
 #include <debug.hpp>
 
@@ -32,7 +30,7 @@ AHackflightSimCameraHUD::AHackflightSimCameraHUD()
 	VisionTextureRenderTarget = VisionTexObj.Object;
 
 	// Creates Texture2D to store VisionTex content
-	VisionTexture = UTexture2D::CreateTransient(VisionTextureRenderTarget->SizeX, VisionTextureRenderTarget->SizeY, PF_B8G8R8A8);
+	UTexture2D* VisionTexture = UTexture2D::CreateTransient(VisionTextureRenderTarget->SizeX, VisionTextureRenderTarget->SizeY, PF_B8G8R8A8);
 
 #if WITH_EDITORONLY_DATA
 	VisionTexture->MipGenSettings = TMGS_NoMipmaps;
@@ -40,7 +38,6 @@ AHackflightSimCameraHUD::AHackflightSimCameraHUD()
 	VisionTexture->SRGB = VisionTextureRenderTarget->SRGB;
 
 	VisionRenderTarget = VisionTextureRenderTarget->GameThread_GetRenderTargetResource();
-
 }
 
 
@@ -48,7 +45,8 @@ void AHackflightSimCameraHUD::DrawHUD()
 {
 	Super::DrawHUD();
 
-	hf::Debug::printf("*** %p", VisionRenderTarget);
+	// Draw the image to the HUD
+	DrawTextureSimple(VisionTextureRenderTarget, LEFTX, TOPY, 1.0f, true);
 
 	float rightx = LEFTX + WIDTH;
 	float bottomy = TOPY + HEIGHT;
@@ -61,7 +59,6 @@ void AHackflightSimCameraHUD::DrawHUD()
 
 void AHackflightSimCameraHUD::drawBorder(float lx, float uy, float rx, float by)
 {
-
 	DrawLine(lx, uy, rx, by, BORDER_COLOR, BORDER_WIDTH);
 }
 
