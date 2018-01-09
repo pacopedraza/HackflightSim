@@ -46,8 +46,13 @@ class HACKFLIGHTSIM_API AHackflightSimCameraHUD : public AHUD
 
 	void drawBorder(float lx, float uy, float rx, float by);
 
-	/** Access to Vision camera */
+	// Access to Vision camera
 	UTextureRenderTarget2D* VisionTextureRenderTarget;
 	FRenderTarget* VisionRenderTarget;
 	TArray<FColor> VisionSurfData;
+
+	// Support for vision algorithms
+	int rows;
+	int cols;
+	uint8_t* imagergb;
 };

@@ -38,6 +38,11 @@ AHackflightSimCameraHUD::AHackflightSimCameraHUD()
 	VisionTexture->SRGB = VisionTextureRenderTarget->SRGB;
 
 	VisionRenderTarget = VisionTextureRenderTarget->GameThread_GetRenderTargetResource();
+
+	// Allocate memory for RGB image bytes
+	rows = VisionTextureRenderTarget->SizeY;
+	cols = VisionTextureRenderTarget->SizeX;
+	imagergb = new uint8_t[rows*cols * 3];
 }
 
 
@@ -47,6 +52,27 @@ void AHackflightSimCameraHUD::DrawHUD()
 
 	// Draw the image to the HUD
 	DrawTextureSimple(VisionTextureRenderTarget, LEFTX, TOPY, 1.0f, true);
+
+	// Read the pixels from the RenderTarget and store them in a FColor array
+	VisionRenderTarget->ReadPixels(VisionSurfData);
+
+	// Convert the FColor array to an RGB byte array
+
+	for (int x = 0; x < cols; ++x) {
+
+		for (int y = 0; y < rows; ++y) {
+
+			int k = x + y * cols;
+
+			FColor PixelColor = VisionSurfData[k];
+
+			imagergb[k * 3] = PixelColor.R;
+			imagergb[k * 3 + 1] = PixelColor.G;
+			imagergb[k * 3 + 2] = PixelColor.B;
+		}
+	}
+
+	// Draw a border around the image
 
 	float rightx = LEFTX + WIDTH;
 	float bottomy = TOPY + HEIGHT;
