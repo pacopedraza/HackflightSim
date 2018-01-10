@@ -1,5 +1,5 @@
 /*
-   HackflihtSimCameraHUD.cpp: heads-up display implementation
+   HackflihtSimVisionHUD.cpp: heads-up display implementation
 
    Copyright (C) Simon D. Levy 2017
 
@@ -18,12 +18,12 @@
    along with Hackflight.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "HackflightSimCameraHUD.h"
+#include "HackflightSimVisionHUD.h"
 
 
 #include <debug.hpp>
 
-AHackflightSimCameraHUD::AHackflightSimCameraHUD()
+AHackflightSimVisionHUD::AHackflightSimVisionHUD()
 {
 	// Get Vision render target from blueprint
 	static ConstructorHelpers::FObjectFinder<UTextureRenderTarget2D> VisionTexObj(TEXT("/Game/Hackflight/T_Vision"));
@@ -46,7 +46,7 @@ AHackflightSimCameraHUD::AHackflightSimCameraHUD()
 }
 
 
-void AHackflightSimCameraHUD::DrawHUD()
+void AHackflightSimVisionHUD::DrawHUD()
 {
 	Super::DrawHUD();
 
@@ -83,7 +83,7 @@ void AHackflightSimCameraHUD::DrawHUD()
 	drawBorder(LEFTX, bottomy, LEFTX, TOPY);
 }
 
-void AHackflightSimCameraHUD::drawBorder(float lx, float uy, float rx, float by)
+void AHackflightSimVisionHUD::drawBorder(float lx, float uy, float rx, float by)
 {
 	DrawLine(lx, uy, rx, by, BORDER_COLOR, BORDER_WIDTH);
 }

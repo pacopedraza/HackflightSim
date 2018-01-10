@@ -1,5 +1,5 @@
 /*
-   HackflihtSimCameraHUD.hpp: heads-up display class definition
+   HackflihtSimVisionHUD.hpp: heads-up display class definition
 
    Copyright (C) Simon D. Levy 2017
 
@@ -25,20 +25,20 @@
 #include "GameFramework/Character.h"
 #include "Engine/TextureRenderTarget2D.h"
 
-#include "HackflightSimCameraHUD.generated.h"
+#include "HackflightSimVisionHUD.generated.h"
 
 UCLASS(Config = Game)
-class HACKFLIGHTSIM_API AHackflightSimCameraHUD : public AHUD
+class HACKFLIGHTSIM_API AHackflightSimVisionHUD : public AHUD
 {
 	GENERATED_BODY()
 
-	AHackflightSimCameraHUD();
+	AHackflightSimVisionHUD();
 
 	virtual void DrawHUD() override;
 
-	const float LEFTX = 1600.f;
-	const float TOPY = 600.f;
-	const float WIDTH = 256.f;
+	const float LEFTX  = 1600.f;
+	const float TOPY   = 800.f;
+	const float WIDTH  = 256.f;
 	const float HEIGHT = 128.f;
 	
 	const FLinearColor BORDER_COLOR = FLinearColor::Yellow;
