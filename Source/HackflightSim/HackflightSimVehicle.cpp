@@ -165,7 +165,7 @@ void AHackflightSimVehicle::Tick(float deltaSeconds)
 	AddActorLocalRotation(deltaSeconds * FRotator(angularSpeeds[1], angularSpeeds[2], angularSpeeds[0]) * (180 / M_PI));
 
 	// Move copter (UE4 uses cm, so multiply by 100 first)
-    AddActorWorldOffset(100*deltaSeconds*FVector(linearSpeeds[0], linearSpeeds[1], linearSpeeds[2]), true);
+	AddActorLocalOffset(100 * deltaSeconds*FVector(linearSpeeds[0], linearSpeeds[1], linearSpeeds[2]), true);
 }
 
 // Collision handling
