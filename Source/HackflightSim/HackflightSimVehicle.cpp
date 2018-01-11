@@ -158,8 +158,6 @@ void AHackflightSimVehicle::Tick(float deltaSeconds)
 
 		FVector pos = GetActorLocation();
 
-		hf::Debug::printf("%f   %f", board.simGetAltitude(), pos.Z);
-
 		// Spin props
 		for (int k = 0; k<4; ++k)
 			motors[k]->rotate(motorValues[k]);

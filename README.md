@@ -21,6 +21,10 @@ HackflightSim differs from AirSim in a few important ways:
 * HackflightSim focuses exclusively on quadcopter firmware, whereas AirSim supports [deep learning](https://github.com/simondlevy/AirSimTensorFlow) and
 different kinds of vehicles.
 
+To avoid tying HacfklightSim to a particular platform, we have put most of the physics-simulation
+[code](https://github.com/simondlevy/Hackflight/blob/master/src/boards/sim/sim.hpp) in the Hackflight repository, 
+instead of putting it in HackflightSim.
+
 # Prerequisites
 
 ## Hardware
