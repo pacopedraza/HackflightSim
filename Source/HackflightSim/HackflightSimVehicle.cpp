@@ -186,6 +186,8 @@ void AHackflightSimVehicle::NotifyHit(
 	// XXX should pass other stuff, like location, other object, etc.
 	if (flying) {
 		collision.notifyHit(angularSpeeds, linearSpeeds);
+		// VehicleMesh->SetSimulatePhysics(true); // XXX maybe this should be called in HackflightSimCollision
+		
 	}
 }
 
