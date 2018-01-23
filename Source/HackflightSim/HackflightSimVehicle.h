@@ -22,6 +22,8 @@ along with HackflightSim.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
+#include <datatypes.hpp>
+
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 
@@ -81,12 +83,9 @@ public:
 
 private:
 
-	// Motors, props
+	// Everything we should need to display the vehicle
+	vehicle_state_t vehicleState;
 	HackflightSimMotor * motors[4];
-
-	// Vehicle state
-	float angularSpeeds[3];
-	float linearSpeeds[3];
 	bool flying;
 
 	// Creates a camera and associated spring-arm

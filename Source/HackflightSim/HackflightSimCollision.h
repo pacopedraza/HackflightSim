@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include <datatypes.hpp>
+
 class Collision {
 
     public:
@@ -29,23 +31,20 @@ class Collision {
 
         // Notifies physics that there's been a collision.  
         // XXX This method should get information about the other object, etc.
-		void notifyHit(float angularSpeeds[3], float linearSpeeds[3]);
+		void notifyHit(vehicle_state_t * state);
 
         // Returns true if physics is still handling a collision, false otherwise
         bool handlingCollision(float deltaSeconds);
 
         // Gets vehicle state
-        void getState(float angularSpeeds[3], float linearSpeeds[3]);
+        void getState(vehicle_state_t * state);
 
     private:
 
-        // Translational speed in meters per second
-        float _linearSpeeds[3];
-
-        // Rotational speeds, in radians per second
-        float _angularSpeeds[3];
+		// Vehicle state (position, angles and their first derivatives)
+		vehicle_state_t vehicleState;
 
         // Counts down time during which simulation is taken over by collision recovery
-        float _collidingSeconds;
+        float collidingSeconds;
 
 }; // class Collision

@@ -20,6 +20,8 @@
 
 #include "HackflightSimCollision.h"
 
+#include <cstring>
+
 #include <stdint.h>
 #include <math.h>
 
@@ -32,26 +34,23 @@ static const float COLLISION_BOUNCEBACK = 0.5f;
 
 void Collision::init(void)
 {
-        for (uint8_t k=0; k<3; ++k) {
-            _linearSpeeds[k] = 0;
-            _angularSpeeds[k] = 0;
-        }
+	memset(&vehicleState, 0, sizeof(vehicle_state_t));
 
-        _collidingSeconds = 0;
+    collidingSeconds = 0;
 }
 
 
-void Collision::notifyHit(float angularSpeeds[3], float linearSpeeds[3])
+void Collision::notifyHit(vehicle_state_t * state)
 {
 	// Set movement trajectory to inverse of current trajectory
 	// XXX We need a more realistic result, like tumbling to ground.
 	for (uint8_t k = 0; k < 3; ++k) {
-		_linearSpeeds[k] = -COLLISION_BOUNCEBACK * linearSpeeds[k];
-		_angularSpeeds[k] = angularSpeeds[k];
+		state->position[k].deriv = -COLLISION_BOUNCEBACK * state->position[k].deriv;
+		state->orientation[k].deriv = state->orientation[k].deriv;
 	}
 
 	// Start collision countdown
-	_collidingSeconds = COLLISION_SECONDS;
+	collidingSeconds = COLLISION_SECONDS;
 
 }
 
@@ -59,18 +58,15 @@ bool Collision::handlingCollision(float deltaSeconds)
 {
     bool retval = false;
 
-    if (_collidingSeconds > 0) {
-        _collidingSeconds -= deltaSeconds;
+    if (collidingSeconds > 0) {
+        collidingSeconds -= deltaSeconds;
         retval = true;
     }
 
     return retval;
 }
 
-void Collision::getState(float angularSpeeds[3], float linearSpeeds[3])
+void Collision::getState(vehicle_state_t * state)
 {
-    for (uint8_t k=0; k<3; ++k) {
-        angularSpeeds[k] = _angularSpeeds[k];
-        linearSpeeds[k] = _linearSpeeds[k];
-    }
+	memcpy(state, &vehicleState, sizeof(vehicle_state_t));
 }

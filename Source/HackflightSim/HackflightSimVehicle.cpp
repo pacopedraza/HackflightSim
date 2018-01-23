@@ -113,11 +113,7 @@ AHackflightSimVehicle::AHackflightSimVehicle()
 	// Start Hackflight firmware
 	hackflight.init(&board, new hf::Controller(), new hf::SimModel());
 
-	// Start motionless
-	for (uint8_t k = 0; k < 3; ++k) {
-		angularSpeeds[k] = 0;
-		linearSpeeds[k] = 0;
-	}
+	// Not flying to start
 	flying = false;
 }
 
@@ -140,7 +136,7 @@ void AHackflightSimVehicle::Tick(float deltaSeconds)
     // During collision recovery, vehicle is not controlled by firmware
 	if (collision.handlingCollision(deltaSeconds)) {
 
-		collision.getState(angularSpeeds, linearSpeeds);
+		collision.getState(&vehicleState);
 	}
 
 	else {
@@ -151,12 +147,7 @@ void AHackflightSimVehicle::Tick(float deltaSeconds)
 		float motorValues[4];
 
         // Get current vehicle state from board
-        board.simGetGyro(angularSpeeds);
-        board.simGetLinearSpeeds(linearSpeeds);
-        board.simGetMotors(motorValues);
-        flying = board.simIsFlying();
-
-		FVector pos = GetActorLocation();
+		board.simGetVehicleState(&vehicleState, motorValues, &flying);
 
 		// Spin props
 		for (int k = 0; k<4; ++k)
@@ -164,10 +155,10 @@ void AHackflightSimVehicle::Tick(float deltaSeconds)
     }
 
 	// Rotate copter in simulation, after converting radians to degrees
-	AddActorLocalRotation(deltaSeconds * FRotator(angularSpeeds[1], angularSpeeds[2], angularSpeeds[0]) * (180 / M_PI));
+	AddActorLocalRotation(deltaSeconds * FRotator(vehicleState.orientation[1].deriv, vehicleState.orientation[2].deriv, vehicleState.orientation[0].deriv) * (180 / M_PI));
 
 	// Move copter (UE4 uses cm, so multiply by 100 first)
-	AddActorLocalOffset(100 * deltaSeconds*FVector(linearSpeeds[0], linearSpeeds[1], linearSpeeds[2]), true);
+	AddActorLocalOffset(100 * deltaSeconds*FVector(vehicleState.position[0].deriv, vehicleState.position[1].deriv, vehicleState.position[2].deriv), true);
 }
 
 // Collision handling
@@ -185,7 +176,7 @@ void AHackflightSimVehicle::NotifyHit(
 
 	// XXX should pass other stuff, like location, other object, etc.
 	if (flying) {
-		collision.notifyHit(angularSpeeds, linearSpeeds);
+		collision.notifyHit(&vehicleState);
 		// VehicleMesh->SetSimulatePhysics(true); // XXX maybe this should be called in HackflightSimCollision
 		
 	}
