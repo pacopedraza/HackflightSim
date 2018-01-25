@@ -45,8 +45,8 @@ void Collision::notifyHit(vehicle_state_t * state)
 	// Set movement trajectory to inverse of current trajectory
 	// XXX We need a more realistic result, like tumbling to ground.
 	for (uint8_t k = 0; k < 3; ++k) {
-		vehicleState.position[k].deriv = -COLLISION_BOUNCEBACK * state->position[k].deriv;
-		vehicleState.orientation[k].deriv = state->orientation[k].deriv;
+		vehicleState.pose.position[k].deriv = -COLLISION_BOUNCEBACK * state->pose.position[k].deriv;
+		vehicleState.pose.orientation[k].deriv = state->pose.orientation[k].deriv;
 	}
 
 	// Start collision countdown
