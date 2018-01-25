@@ -87,7 +87,6 @@ private:
 	// Everything we should need to display the vehicle
 	vehicle_state_t vehicleState;
 	HackflightSimMotor * motors[4];
-	bool flying;
 
 	// Creates a camera and associated spring-arm
     void createCameraWithSpringArm(

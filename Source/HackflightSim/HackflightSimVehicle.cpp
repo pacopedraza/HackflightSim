@@ -115,7 +115,6 @@ AHackflightSimVehicle::AHackflightSimVehicle()
 	hackflight.init(&board, new hf::Controller(), new hf::SimModel());
 
 	// Not flying to start
-	flying = false;
 	collisionState = FLYING;
 }
 
@@ -135,7 +134,9 @@ void AHackflightSimVehicle::Tick(float deltaSeconds)
 		keyDownTime = 0;
 	}
 
-	switch (collision.getCollisionState(deltaSeconds)) {
+	collisionState = collision.getCollisionState(deltaSeconds);
+
+	switch (collisionState) {
 
 	case BOUNCING:
 
@@ -161,8 +162,9 @@ void AHackflightSimVehicle::Tick(float deltaSeconds)
 
 		float motorValues[4];
 
-		// Get current vehicle state from board
-		board.simGetVehicleState(&vehicleState, motorValues, &flying);
+		// Get current vehicle state from board, ignoring "flying" flag
+		bool ignore;
+		board.simGetVehicleState(&vehicleState, motorValues, &ignore);
 
 		// Spin props
 		for (int k = 0; k<4; ++k)
@@ -190,7 +192,7 @@ void AHackflightSimVehicle::NotifyHit(
     Super::NotifyHit(MyComp, Other, OtherComp, bSelfMoved, HitLocation, HitNormal, NormalImpulse, Hit);
 
 	// XXX should pass other stuff, like location, other object, etc.
-	if (flying) {
+	if (collisionState == FLYING) {
 		collision.notifyHit(&vehicleState);
 	}
 }
