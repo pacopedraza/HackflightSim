@@ -28,6 +28,7 @@ along with HackflightSim.  If not, see <http://www.gnu.org/licenses/>.
 #include "GameFramework/Pawn.h"
 
 #include "HackflightSimMotor.h"
+#include "HackflightSimCollision.h"
 
 #include "HackflightSimVehicle.generated.h"
 
@@ -103,6 +104,9 @@ private:
 	uint8_t activeCameraIndex;
 	float keyDownTime;
 	void cycleCamera(void);
+
+
+	collision_state_t collisionState;
 
 public:
 

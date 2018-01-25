@@ -22,6 +22,15 @@
 
 #include <datatypes.hpp>
 
+
+typedef enum {
+
+	FLYING,
+	BOUNCING,
+	FALLING
+
+} collision_state_t;
+
 class Collision {
 
     public:
@@ -33,8 +42,8 @@ class Collision {
         // XXX This method should get information about the other object, etc.
 		void notifyHit(vehicle_state_t * state);
 
-        // Returns true if physics is still handling a collision, false otherwise
-        bool handlingCollision(float deltaSeconds);
+        // Returns positive number if physics is still handling a collision, zero otherwise
+        collision_state_t getCollisionState(float deltaSeconds);
 
         // Gets vehicle state
         void getState(vehicle_state_t * state);

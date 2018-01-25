@@ -27,10 +27,9 @@
 
 #include <debug.hpp>
 
-
  // Controls duration and extent of bounce-back on collision
-static const float COLLISION_SECONDS    = 1.0f;
-static const float COLLISION_BOUNCEBACK = 0.5f;
+static const float BOUNCEBACK_SECONDS = 2.0f;
+static const float BOUNCEBACK_FORCE   = 0.5f;
 
 void Collision::init(void)
 {
@@ -45,23 +44,26 @@ void Collision::notifyHit(vehicle_state_t * state)
 	// Set movement trajectory to inverse of current trajectory
 	// XXX We need a more realistic result, like tumbling to ground.
 	for (uint8_t k = 0; k < 3; ++k) {
-		vehicleState.pose.position[k].deriv = -COLLISION_BOUNCEBACK * state->pose.position[k].deriv;
+		vehicleState.pose.position[k].deriv = -BOUNCEBACK_FORCE * state->pose.position[k].deriv;
 		vehicleState.pose.orientation[k].deriv = state->pose.orientation[k].deriv;
 	}
 
 	// Start collision countdown
-	collidingSeconds = COLLISION_SECONDS;
-
+	collidingSeconds = BOUNCEBACK_SECONDS;
 }
 
-bool Collision::handlingCollision(float deltaSeconds)
+collision_state_t Collision::getCollisionState(float deltaSeconds)
 {
-    bool retval = false;
+	collision_state_t retval = FLYING;
 
-    if (collidingSeconds > 0) {
+    if (collidingSeconds > 1) {
         collidingSeconds -= deltaSeconds;
-        retval = true;
+        retval = BOUNCING;
     }
+
+	else if (collidingSeconds > 0) {
+		retval = FALLING;
+	}
 
     return retval;
 }

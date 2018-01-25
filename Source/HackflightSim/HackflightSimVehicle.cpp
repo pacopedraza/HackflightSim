@@ -116,6 +116,7 @@ AHackflightSimVehicle::AHackflightSimVehicle()
 
 	// Not flying to start
 	flying = false;
+	collisionState = FLYING;
 }
 
 void AHackflightSimVehicle::Tick(float deltaSeconds)
@@ -134,26 +135,39 @@ void AHackflightSimVehicle::Tick(float deltaSeconds)
 		keyDownTime = 0;
 	}
 
-    // During collision recovery, vehicle is not controlled by firmware
-	if (collision.handlingCollision(deltaSeconds)) {
+	switch (collision.getCollisionState(deltaSeconds)) {
+
+	case BOUNCING:
+
+		hf::Debug::printf("Bouncin'!!!!");
 
 		collision.getState(&vehicleState);
-	}
 
-	else {
+		break;
+		
+	case FALLING:
 
-        // Update our flight controller
-        hackflight.update();
+		hf::Debug::printf("Falling");
+		VehicleMesh->SetSimulatePhysics(true);
+
+		break;
+
+	default:
+
+		hf::Debug::printf("Flying");
+
+		// Update our flight controller
+		hackflight.update();
 
 		float motorValues[4];
 
-        // Get current vehicle state from board
+		// Get current vehicle state from board
 		board.simGetVehicleState(&vehicleState, motorValues, &flying);
 
 		// Spin props
 		for (int k = 0; k<4; ++k)
 			motors[k]->rotate(motorValues[k]);
-    }
+	}
 
 	// Rotate copter in simulation, after converting radians to degrees
 	AddActorLocalRotation(deltaSeconds * FRotator(vehicleState.pose.orientation[1].deriv, vehicleState.pose.orientation[2].deriv, vehicleState.pose.orientation[0].deriv) * (180 / M_PI));
@@ -178,8 +192,6 @@ void AHackflightSimVehicle::NotifyHit(
 	// XXX should pass other stuff, like location, other object, etc.
 	if (flying) {
 		collision.notifyHit(&vehicleState);
-		// VehicleMesh->SetSimulatePhysics(true); // XXX maybe this should be called in HackflightSimCollision
-		
 	}
 }
 
