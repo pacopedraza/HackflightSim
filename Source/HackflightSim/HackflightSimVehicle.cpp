@@ -63,6 +63,7 @@ hf::Hackflight hackflight;
 Collision collision;
 
 // Board simulation
+#include <boards/sim/sim.hpp>
 hf::SimBoard board;
 
 // Pawn methods ---------------------------------------------------
@@ -155,10 +156,10 @@ void AHackflightSimVehicle::Tick(float deltaSeconds)
     }
 
 	// Rotate copter in simulation, after converting radians to degrees
-	AddActorLocalRotation(deltaSeconds * FRotator(vehicleState.orientation[1].deriv, vehicleState.orientation[2].deriv, vehicleState.orientation[0].deriv) * (180 / M_PI));
+	AddActorLocalRotation(deltaSeconds * FRotator(vehicleState.pose.orientation[1].deriv, vehicleState.pose.orientation[2].deriv, vehicleState.pose.orientation[0].deriv) * (180 / M_PI));
 
 	// Move copter (UE4 uses cm, so multiply by 100 first)
-	AddActorLocalOffset(100 * deltaSeconds*FVector(vehicleState.position[0].deriv, vehicleState.position[1].deriv, vehicleState.position[2].deriv), true);
+	AddActorLocalOffset(100 * deltaSeconds*FVector(vehicleState.pose.position[0].deriv, vehicleState.pose.position[1].deriv, vehicleState.pose.position[2].deriv), true);
 }
 
 // Collision handling
