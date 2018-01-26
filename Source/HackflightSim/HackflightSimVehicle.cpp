@@ -162,9 +162,8 @@ void AHackflightSimVehicle::Tick(float deltaSeconds)
 
 		float motorValues[4];
 
-		// Get current vehicle state from board, ignoring "flying" flag
-		bool ignore;
-		board.simGetVehicleState(&vehicleState, motorValues, &ignore);
+		// Get current vehicle state and motor values from board
+		board.simGetVehicleState(&vehicleState, motorValues);
 
 		// Spin props
 		for (int k = 0; k<4; ++k)
