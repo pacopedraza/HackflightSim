@@ -52,6 +52,10 @@ hf::Hackflight hackflight;
 #include <receivers/sim/linux.hpp>
 #endif
 
+// Additional PID controllers
+#include <extras/altitude_hold.hpp>
+hf::AltitudeHold altitudeHold = hf::AltitudeHold(0.04f, 0.50f, 6.00f);
+
 // Board simulation
 #include "HackflightSimBoard.hpp"
 
@@ -111,8 +115,20 @@ AHackflightSimVehicle::AHackflightSimVehicle()
     // Initialize collision physics
     collision.init();
 
-	// Start Hackflight firmware
-	hackflight.init(&board, new hf::Controller(), new hf::SimModel());
+	// Construct may be called multiple times, so avoid re-initializing Hackflight
+
+	static bool hackflightIn1itialized;
+
+	if (!hackflightIn1itialized) {
+
+		// Add altithude-hold feature to Hackflight firmware
+		hackflight.addPidController(&altitudeHold);
+
+		// Start Hackflight firmware
+		hackflight.init(&board, new hf::Controller(), new hf::SimModel());
+	
+		hackflightIn1itialized = true;
+	}
 
 	// Not flying to start
 	collisionState = FLYING;
@@ -140,7 +156,7 @@ void AHackflightSimVehicle::Tick(float deltaSeconds)
 
 	case BOUNCING:
 
-		hf::Debug::printf("Bouncin'!!!!");
+		//hf::Debug::printf("Bouncin'!!!!");
 
 		collision.getState(&vehicleState);
 
@@ -148,14 +164,14 @@ void AHackflightSimVehicle::Tick(float deltaSeconds)
 		
 	case FALLING:
 
-		hf::Debug::printf("Falling");
+		//hf::Debug::printf("Falling");
 		VehicleMesh->SetSimulatePhysics(true);
 
 		break;
 
 	default:
 
-		hf::Debug::printf("Flying");
+		//hf::Debug::printf("Flying");
 
 		// Update our flight controller
 		hackflight.update();

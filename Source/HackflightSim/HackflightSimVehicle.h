@@ -104,7 +104,6 @@ private:
 	float keyDownTime;
 	void cycleCamera(void);
 
-
 	collision_state_t collisionState;
 
 public:
