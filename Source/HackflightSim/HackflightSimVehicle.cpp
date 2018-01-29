@@ -123,6 +123,7 @@ AHackflightSimVehicle::AHackflightSimVehicle()
 	hackflight.init(&board, new hf::Controller(), new hf::SimModel());
 	
 	// No collision yet
+	initialLocation = GetActorLocation();
 	collision.init();
 	collisionState = NORMAL;
 }
@@ -211,13 +212,16 @@ void AHackflightSimVehicle::NotifyHit(
 
 		// Return control of physics to firmware
 		VehicleMesh->SetSimulatePhysics(false);
-	
+
 		// Start Hackflight firmware
 		hackflight.init(&board, new hf::Controller(), new hf::SimModel());
 
 		// No collision
 		collisionState = NORMAL;
 		collision.init();
+
+		// Return vehicle to its starting position
+		SetActorLocation(initialLocation);
 
 		break;
 	}

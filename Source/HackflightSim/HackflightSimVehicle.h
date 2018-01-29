@@ -106,6 +106,8 @@ private:
 
 	collision_state_t collisionState;
 
+	FVector initialLocation;
+
 public:
 
 	FORCEINLINE class UStaticMeshComponent* GetVehicleMesh() const { return VehicleMesh; }
