@@ -149,28 +149,18 @@ void AHackflightSimVehicle::Tick(float deltaSeconds)
 
 	collisionState = collision.getCollisionState(deltaSeconds);
 
-	float motorValues[4];
+	float motorValues[4] = { 0.5f, 0.5f, 0.5f, 0.5f };
 
 	switch (collisionState) {
 
 	case BOUNCING:
 
 		collision.getState(&vehicleState);
-
-		// Spin props at arbitrary rate
-		for (int k = 0; k<4; ++k)
-			motors[k]->rotate(0.5);
-
 		break;
 		
 	case FALLING:
 
 		VehicleMesh->SetSimulatePhysics(true);
-
-		// Spin props at arbitrary rate
-		for (int k = 0; k<4; ++k)
-			motors[k]->rotate(0.5);
-
 		break;
 
 	default:
@@ -180,11 +170,11 @@ void AHackflightSimVehicle::Tick(float deltaSeconds)
 
 		// Get current vehicle state and motor values from board
 		board.simGetVehicleState(&vehicleState, motorValues);
-
-		// Spin props
-		for (int k = 0; k<4; ++k)
-			motors[k]->rotate(motorValues[k]);
 	}
+
+	// Spin props
+	for (int k = 0; k<4; ++k)
+		motors[k]->rotate(motorValues[k]);
 
 	// Rotate copter in simulation, after converting radians to degrees
 	AddActorLocalRotation(deltaSeconds * FRotator(vehicleState.pose.orientation[1].deriv, vehicleState.pose.orientation[2].deriv, vehicleState.pose.orientation[0].deriv) * (180 / M_PI));
