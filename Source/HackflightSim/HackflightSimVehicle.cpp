@@ -120,20 +120,13 @@ AHackflightSimVehicle::AHackflightSimVehicle()
 
 	// Construct may be called multiple times, so avoid re-initializing Hackflight
 
-	static bool hackflightIn1itialized;
+	// Add altithude-hold and position-hold PID controllers to Hackflight firmware
+	hackflight.addPidController(&altitudeHold);
+	hackflight.addPidController(&positionHold);
 
-	if (!hackflightIn1itialized) {
-
-		// Add altithude-hold and position-hold PID controllers to Hackflight firmware
-		hackflight.addPidController(&altitudeHold);
-		hackflight.addPidController(&positionHold);
-
-		// Start Hackflight firmware
-		hackflight.init(&board, new hf::Controller(), new hf::SimModel());
+	// Start Hackflight firmware
+	hackflight.init(&board, new hf::Controller(), new hf::SimModel());
 	
-		hackflightIn1itialized = true;
-	}
-
 	// Not flying to start
 	collisionState = FLYING;
 }
@@ -160,7 +153,7 @@ void AHackflightSimVehicle::Tick(float deltaSeconds)
 
 	case BOUNCING:
 
-		//hf::Debug::printf("Bouncin'!!!!");
+		hf::Debug::printf("Bouncin'!!!!");
 
 		collision.getState(&vehicleState);
 
@@ -168,14 +161,14 @@ void AHackflightSimVehicle::Tick(float deltaSeconds)
 		
 	case FALLING:
 
-		//hf::Debug::printf("Falling");
+		hf::Debug::printf("Falling");
 		VehicleMesh->SetSimulatePhysics(true);
 
 		break;
 
 	default:
 
-		//hf::Debug::printf("Flying");
+		hf::Debug::printf("Flying");
 
 		// Update our flight controller
 		hackflight.update();
