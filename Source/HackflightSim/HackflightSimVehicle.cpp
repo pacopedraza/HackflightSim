@@ -53,8 +53,11 @@ hf::Hackflight hackflight;
 #endif
 
 // Additional PID controllers
-#include <extras/altitude_hold.hpp>
+#include <pid_controllers/altitude_hold.hpp>
 hf::AltitudeHold altitudeHold = hf::AltitudeHold(0.04f, 0.50f, 6.00f);
+
+#include <pid_controllers/position_hold.hpp>
+hf::PositionHold positionHold = hf::PositionHold(0.f, 0.f, 0.0f);
 
 // Board simulation
 #include "HackflightSimBoard.hpp"
@@ -121,8 +124,9 @@ AHackflightSimVehicle::AHackflightSimVehicle()
 
 	if (!hackflightIn1itialized) {
 
-		// Add altithude-hold feature to Hackflight firmware
+		// Add altithude-hold and position-hold PID controllers to Hackflight firmware
 		hackflight.addPidController(&altitudeHold);
+		hackflight.addPidController(&positionHold);
 
 		// Start Hackflight firmware
 		hackflight.init(&board, new hf::Controller(), new hf::SimModel());
