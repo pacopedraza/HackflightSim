@@ -149,11 +149,17 @@ void AHackflightSimVehicle::Tick(float deltaSeconds)
 
 	collisionState = collision.getCollisionState(deltaSeconds);
 
+	float motorValues[4];
+
 	switch (collisionState) {
 
 	case BOUNCING:
 
 		collision.getState(&vehicleState);
+
+		// Spin props at arbitrary rate
+		for (int k = 0; k<4; ++k)
+			motors[k]->rotate(0.5);
 
 		break;
 		
@@ -161,15 +167,16 @@ void AHackflightSimVehicle::Tick(float deltaSeconds)
 
 		VehicleMesh->SetSimulatePhysics(true);
 
+		// Spin props at arbitrary rate
+		for (int k = 0; k<4; ++k)
+			motors[k]->rotate(0.5);
+
 		break;
 
 	default:
 
-
 		// Update our flight controller
 		hackflight.update();
-
-		float motorValues[4];
 
 		// Get current vehicle state and motor values from board
 		board.simGetVehicleState(&vehicleState, motorValues);
