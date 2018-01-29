@@ -28,7 +28,6 @@ along with HackflightSim.  If not, see <http://www.gnu.org/licenses/>.
 #include "GameFramework/Pawn.h"
 
 #include "HackflightSimMotor.h"
-#include "HackflightSimCollision.h"
 
 #include "HackflightSimVehicle.generated.h"
 
@@ -84,6 +83,14 @@ public:
 
 private:
 
+	typedef enum {
+
+		NORMAL,
+		BOUNCING,
+		FALLING
+
+	} collision_state_t;
+
 	// Everything we should need to display the vehicle
 	vehicle_state_t vehicleState;
 	HackflightSimMotor * motors[4];
@@ -106,9 +113,16 @@ private:
 
 	collision_state_t collisionState;
 
+	// Counts down time during which simulation is taken over by collision recovery
+	float collidingSeconds;
+
 	// We need initial location and orientation to restore vehicle after a collision
 	FVector initialLocation;
 	FRotator initialRotation;
+
+	// Controls duration and extent of bounce-back on collision
+	const float BOUNCEBACK_SECONDS = 2.0f;
+	const float BOUNCEBACK_FORCE = 0.5f;
 
 public:
 

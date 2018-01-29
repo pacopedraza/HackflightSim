@@ -65,10 +65,6 @@ hf::PositionHold positionHold = hf::PositionHold(0.f, 0.f, 0.0f);
 // PID tuning
 #include <models/sim.hpp>
 
-// Collision simulation -------------------------------------------
-#include "HackflightSimCollision.h"
-Collision collision;
-
 // Board simulation
 #include <boards/sim/sim.hpp>
 hf::SimBoard board;
@@ -127,7 +123,6 @@ AHackflightSimVehicle::AHackflightSimVehicle()
 	initialRotation = GetActorRotation();
 
 	// No collision yet
-	collision.init();
 	collisionState = NORMAL;
 }
 
@@ -147,19 +142,27 @@ void AHackflightSimVehicle::Tick(float deltaSeconds)
 		keyDownTime = 0;
 	}
 
-	collisionState = collision.getCollisionState(deltaSeconds);
+	collision_state_t retval = NORMAL;
+
+	if (collidingSeconds > 1) {
+		collidingSeconds -= deltaSeconds;
+		retval = BOUNCING;
+	}
+
+	else if (collidingSeconds > 0) {
+		retval = FALLING;
+	}
+
+	collisionState = retval;
 
 	float motorValues[4] = { 0.5f, 0.5f, 0.5f, 0.5f };
 
 	switch (collisionState) {
 
 	case BOUNCING:
-
-		collision.getState(&vehicleState);
 		break;
 		
 	case FALLING:
-
 		VehicleMesh->SetSimulatePhysics(true);
 		break;
 
@@ -196,12 +199,18 @@ void AHackflightSimVehicle::NotifyHit(
 {
     Super::NotifyHit(MyComp, Other, OtherComp, bSelfMoved, HitLocation, HitNormal, NormalImpulse, Hit);
 
-	// XXX should pass other stuff, like location, other object, etc.
-
 	switch (collisionState) {
 
 	case NORMAL:
-		collision.notifyHit(&vehicleState);
+
+		// Set movement trajectory to inverse of current trajectory
+		for (uint8_t k = 0; k < 3; ++k) {
+			vehicleState.pose.position[k].deriv *= -BOUNCEBACK_FORCE;
+			//vehicleState.pose.orientation[k].deriv = state->pose.orientation[k].deriv;
+		}
+
+		// Start collision countdown
+		collidingSeconds = BOUNCEBACK_SECONDS;		
 		break;
 
 	case FALLING:
@@ -214,7 +223,7 @@ void AHackflightSimVehicle::NotifyHit(
 
 		// No collision
 		collisionState = NORMAL;
-		collision.init();
+		collidingSeconds = 0;
 
 		// Return vehicle to its starting position and orientation
 		SetActorLocation(initialLocation);
