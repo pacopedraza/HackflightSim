@@ -106,7 +106,9 @@ private:
 
 	collision_state_t collisionState;
 
+	// We need initial location and orientation to restore vehicle after a collision
 	FVector initialLocation;
+	FRotator initialRotation;
 
 public:
 

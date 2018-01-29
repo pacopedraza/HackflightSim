@@ -122,8 +122,11 @@ AHackflightSimVehicle::AHackflightSimVehicle()
 	// Start Hackflight firmware
 	hackflight.init(&board, new hf::Controller(), new hf::SimModel());
 	
-	// No collision yet
+	// Store initial position, orientation for recovery after collision
 	initialLocation = GetActorLocation();
+	initialRotation = GetActorRotation();
+
+	// No collision yet
 	collision.init();
 	collisionState = NORMAL;
 }
@@ -150,22 +153,18 @@ void AHackflightSimVehicle::Tick(float deltaSeconds)
 
 	case BOUNCING:
 
-		//hf::Debug::printf("Bouncin'!!!!");
-
 		collision.getState(&vehicleState);
 
 		break;
 		
 	case FALLING:
 
-		//hf::Debug::printf("Falling");
 		VehicleMesh->SetSimulatePhysics(true);
 
 		break;
 
 	default:
 
-		//hf::Debug::printf("Flying");
 
 		// Update our flight controller
 		hackflight.update();
@@ -220,8 +219,9 @@ void AHackflightSimVehicle::NotifyHit(
 		collisionState = NORMAL;
 		collision.init();
 
-		// Return vehicle to its starting position
+		// Return vehicle to its starting position and orientation
 		SetActorLocation(initialLocation);
+		SetActorRotation(initialRotation);
 
 		break;
 	}
