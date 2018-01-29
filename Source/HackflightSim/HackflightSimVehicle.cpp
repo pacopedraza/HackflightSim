@@ -115,11 +115,6 @@ AHackflightSimVehicle::AHackflightSimVehicle()
 	motors[2] = new HackflightSimMotor(this, VehicleMesh, PARAM_MOTOR_REAR_X, PARAM_MOTOR_LEFT_Y,   -1, 2);
 	motors[3] = new HackflightSimMotor(this, VehicleMesh, PARAM_MOTOR_FRONT_X, PARAM_MOTOR_LEFT_Y,  +1, 3);
 
-    // Initialize collision physics
-    collision.init();
-
-	// Construct may be called multiple times, so avoid re-initializing Hackflight
-
 	// Add altithude-hold and position-hold PID controllers to Hackflight firmware
 	hackflight.addPidController(&altitudeHold);
 	hackflight.addPidController(&positionHold);
@@ -127,8 +122,9 @@ AHackflightSimVehicle::AHackflightSimVehicle()
 	// Start Hackflight firmware
 	hackflight.init(&board, new hf::Controller(), new hf::SimModel());
 	
-	// Not flying to start
-	collisionState = FLYING;
+	// No collision yet
+	collision.init();
+	collisionState = NORMAL;
 }
 
 void AHackflightSimVehicle::Tick(float deltaSeconds)
@@ -153,7 +149,7 @@ void AHackflightSimVehicle::Tick(float deltaSeconds)
 
 	case BOUNCING:
 
-		hf::Debug::printf("Bouncin'!!!!");
+		//hf::Debug::printf("Bouncin'!!!!");
 
 		collision.getState(&vehicleState);
 
@@ -161,14 +157,14 @@ void AHackflightSimVehicle::Tick(float deltaSeconds)
 		
 	case FALLING:
 
-		hf::Debug::printf("Falling");
+		//hf::Debug::printf("Falling");
 		VehicleMesh->SetSimulatePhysics(true);
 
 		break;
 
 	default:
 
-		hf::Debug::printf("Flying");
+		//hf::Debug::printf("Flying");
 
 		// Update our flight controller
 		hackflight.update();
@@ -204,9 +200,28 @@ void AHackflightSimVehicle::NotifyHit(
     Super::NotifyHit(MyComp, Other, OtherComp, bSelfMoved, HitLocation, HitNormal, NormalImpulse, Hit);
 
 	// XXX should pass other stuff, like location, other object, etc.
-	if (collisionState == FLYING) {
+
+	switch (collisionState) {
+
+	case NORMAL:
 		collision.notifyHit(&vehicleState);
+		break;
+
+	case FALLING:
+
+		// Return control of physics to firmware
+		VehicleMesh->SetSimulatePhysics(false);
+	
+		// Start Hackflight firmware
+		hackflight.init(&board, new hf::Controller(), new hf::SimModel());
+
+		// No collision
+		collisionState = NORMAL;
+		collision.init();
+
+		break;
 	}
+	
 }
 
 // Cycles among our three cameras

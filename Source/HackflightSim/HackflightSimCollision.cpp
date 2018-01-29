@@ -54,7 +54,7 @@ void Collision::notifyHit(vehicle_state_t * state)
 
 collision_state_t Collision::getCollisionState(float deltaSeconds)
 {
-	collision_state_t retval = FLYING;
+	collision_state_t retval = NORMAL;
 
     if (collidingSeconds > 1) {
         collidingSeconds -= deltaSeconds;

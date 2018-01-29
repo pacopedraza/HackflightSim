@@ -25,7 +25,7 @@
 
 typedef enum {
 
-	FLYING,
+	NORMAL,
 	BOUNCING,
 	FALLING
 
