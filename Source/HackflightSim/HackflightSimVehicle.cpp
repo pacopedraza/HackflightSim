@@ -206,11 +206,11 @@ void AHackflightSimVehicle::NotifyHit(
 		// Set movement trajectory to inverse of current trajectory
 		for (uint8_t k = 0; k < 3; ++k) {
 			vehicleState.pose.position[k].deriv *= -BOUNCEBACK_FORCE;
-			//vehicleState.pose.orientation[k].deriv = state->pose.orientation[k].deriv;
 		}
 
 		// Start collision countdown
-		collidingSeconds = BOUNCEBACK_SECONDS;		
+		collidingSeconds = BOUNCEBACK_SECONDS;	
+
 		break;
 
 	case FALLING:
