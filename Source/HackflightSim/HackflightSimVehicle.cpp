@@ -63,7 +63,13 @@ hf::PositionHold positionHold = hf::PositionHold(0.f, 0.f, 0.0f);
 #include "HackflightSimBoard.hpp"
 
 // PID tuning
-#include <models/sim.hpp>
+hf::Stabilizer stabilizer = hf::Stabilizer(
+                0.20f,      // Level P
+                0.225f,     // Gyro cyclic P
+                0.001875f,  // Gyro cyclic I
+                0.375f,     // Gyro cyclic D
+                1.0625f,    // Gyro yaw P
+                0.005625f); // Gyro yaw I
 
 // Board simulation
 #include <boards/sim/sim.hpp>
@@ -116,7 +122,7 @@ AHackflightSimVehicle::AHackflightSimVehicle()
 	hackflight.addPidController(&positionHold);
 
 	// Start Hackflight firmware
-	hackflight.init(&board, new hf::Controller(), new hf::SimModel());
+	hackflight.init(&board, new hf::Controller(), &stabilizer);
 	
 	// Store initial position, orientation for recovery after collision
 	initialLocation = GetActorLocation();
@@ -219,7 +225,7 @@ void AHackflightSimVehicle::NotifyHit(
 		VehicleMesh->SetSimulatePhysics(false);
 
 		// Start Hackflight firmware
-		hackflight.init(&board, new hf::Controller(), new hf::SimModel());
+		hackflight.init(&board, new hf::Controller(), &stabilizer);
 
 		// No collision
 		collisionState = NORMAL;
