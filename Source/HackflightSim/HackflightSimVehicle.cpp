@@ -64,12 +64,13 @@ hf::PositionHold positionHold = hf::PositionHold(0.f, 0.f, 0.0f);
 
 // PID tuning
 hf::Stabilizer stabilizer = hf::Stabilizer(
-                0.20f,      // Level P
-                0.225f,     // Gyro cyclic P
-                0.001875f,  // Gyro cyclic I
-                0.375f,     // Gyro cyclic D
-                1.0625f,    // Gyro yaw P
-                0.005625f); // Gyro yaw I
+	0.10f,      // Level P
+	.00001f,     // Gyro cyclic P
+	0,			// Gyro cyclic I
+	0,			// Gyro cyclic D
+	0,			// Gyro yaw P
+	0);			// Gyro yaw I
+
 
 // Board simulation
 #include <boards/sim/sim.hpp>
