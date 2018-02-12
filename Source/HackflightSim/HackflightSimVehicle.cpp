@@ -187,10 +187,10 @@ void AHackflightSimVehicle::Tick(float deltaSeconds)
 		motors[k]->rotate(motorValues[k]);
 
 	// Rotate copter in simulation, after converting radians to degrees
-	AddActorLocalRotation(deltaSeconds * FRotator(vehicleState.pose.orientation[1].deriv, vehicleState.pose.orientation[2].deriv, vehicleState.pose.orientation[0].deriv) * (180 / M_PI));
+	AddActorLocalRotation(deltaSeconds * FRotator(vehicleState.orientation.derivs[1], vehicleState.orientation.derivs[2], vehicleState.orientation.derivs[0]) * (180 / M_PI));
 
 	// Move copter (UE4 uses cm, so multiply by 100 first)
-	AddActorLocalOffset(100 * deltaSeconds*FVector(vehicleState.pose.position[0].deriv, vehicleState.pose.position[1].deriv, vehicleState.pose.position[2].deriv), true);
+	AddActorLocalOffset(100 * deltaSeconds*FVector(vehicleState.position.derivs[0], vehicleState.position.derivs[1], vehicleState.position.derivs[2]), true);
 }
 
 // Collision handling
@@ -212,7 +212,7 @@ void AHackflightSimVehicle::NotifyHit(
 
 		// Set movement trajectory to inverse of current trajectory
 		for (uint8_t k = 0; k < 3; ++k) {
-			vehicleState.pose.position[k].deriv *= -BOUNCEBACK_FORCE;
+			vehicleState.position.derivs[k] *= -BOUNCEBACK_FORCE;
 		}
 
 		// Start collision countdown
