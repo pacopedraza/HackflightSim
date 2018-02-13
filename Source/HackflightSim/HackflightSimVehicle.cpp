@@ -131,12 +131,75 @@ AHackflightSimVehicle::AHackflightSimVehicle()
 
 	// No collision yet
 	collisionState = NORMAL;
+
+	/*
+
+	// http://bendemott.blogspot.com/2016/10/unreal-4-playing-sound-from-c-with.html 
+
+	// Load our Sound Cue for the propeller sound we created in the editor... 
+	// note your path may be different depending
+	// on where you store the asset on disk.
+	static ConstructorHelpers::FObjectFinder<USoundCue> propellerCue(TEXT("'/Game/airplane-engine.airplane-engine'"));
+
+	// Store a reference to the Cue asset - we'll need it later.
+	propellerAudioCue = propellerCue.Object;
+
+	// Create an audio component, the audio component wraps the Cue, 
+	// and allows us to ineract with
+	// it, and its parameters from code.
+	propellerAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("PropellerAudioComp"));
+
+	// I don't want the sound playing the moment it's created.
+	propellerAudioComponent->bAutoActivate = false;
+
+	// I want the sound to follow the pawn around, so I attach it to the Pawns root.
+	propellerAudioComponent->SetupAttachment(GetRootComponent());
+
+	// I want the sound to come from slighty in front of the pawn.
+	propellerAudioComponent->SetRelativeLocation(FVector(100.0f, 0.0f, 0.0f));
+
+	*/
 }
 
+void AHackflightSimVehicle::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	/*
+	if (propellerAudioCue->IsValidLowLevelFast()) {
+		propellerAudioComponent->SetSound(propellerAudioCue);
+	}
+	*/
+}
+
+// Called when the game starts or when spawned
+void AHackflightSimVehicle::BeginPlay()
+{
+	Super::BeginPlay();
+
+	/*
+
+	// Note because the Cue Asset is set to loop the sound,
+	// once we start playing the sound, it will play 
+	// continiously...
+
+	// You can fade the sound in... 
+	float startTime = 9.f;
+	float volume = 1.0f;
+	float fadeTime = 1.0f;
+	propellerAudioComponent->FadeIn(fadeTime, volume, startTime);
+
+	// Or you can start playing the sound immediately.
+	propellerAudioComponent->Play();
+	*/
+}
 void AHackflightSimVehicle::Tick(float deltaSeconds)
 {
 	// Call any parent class Tick implementation
 	Super::Tick(deltaSeconds);
+
+	// Modulate the pitch of the propeller sound (pitch as in frequency, not pitch/roll/yaw)
+	//propellerAudioComponent->SetFloatParameter(FName("pitch"), propRpm);
 
 	// Spacebar cycles through cameras
 	if (GetWorld()->GetFirstPlayerController()->GetInputKeyTimeDown(FKey("Spacebar")) > 0) {

@@ -26,6 +26,8 @@ along with HackflightSim.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "Runtime/Engine/Classes/Sound/SoundCue.h"
+#include "Components/AudioComponent.h"
 
 #include "HackflightSimMotor.h"
 
@@ -63,6 +65,18 @@ class AHackflightSimVehicle : public APawn
 	// Spring arm for FPV camera
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* FpvCameraSpringArm;
+
+	// Audio support: see http://bendemott.blogspot.com/2016/10/unreal-4-playing-sound-from-c-with.html
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Audio", meta = (AllowPrivateAccess = "true"))
+	class USoundCue* propellerAudioCue;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Audio", meta = (AllowPrivateAccess = "true"))
+	class USoundCue* propellerStartupCue;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Audio", meta = (AllowPrivateAccess = "true"))
+	class UAudioComponent* propellerAudioComponent;
+		
 
 public:
 
