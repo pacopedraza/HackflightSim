@@ -138,7 +138,7 @@ AHackflightSimVehicle::AHackflightSimVehicle()
 	// Load our Sound Cue for the propeller sound we created in the editor... 
 	// note your path may be different depending
 	// on where you store the asset on disk.
-	static ConstructorHelpers::FObjectFinder<USoundCue> propellerCue(TEXT("'/Game/MotorSoundCue'"));
+	static ConstructorHelpers::FObjectFinder<USoundCue> propellerCue(TEXT("'/Game/Hackflight/MotorSoundCue'"));
 	
 	// Store a reference to the Cue asset - we'll need it later.
 	propellerAudioCue = propellerCue.Object;
