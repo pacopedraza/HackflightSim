@@ -132,15 +132,14 @@ AHackflightSimVehicle::AHackflightSimVehicle()
 	// No collision yet
 	collisionState = NORMAL;
 
-	/*
 
 	// http://bendemott.blogspot.com/2016/10/unreal-4-playing-sound-from-c-with.html 
 
 	// Load our Sound Cue for the propeller sound we created in the editor... 
 	// note your path may be different depending
 	// on where you store the asset on disk.
-	static ConstructorHelpers::FObjectFinder<USoundCue> propellerCue(TEXT("'/Game/airplane-engine.airplane-engine'"));
-
+	static ConstructorHelpers::FObjectFinder<USoundCue> propellerCue(TEXT("'/Game/MotorSoundCue'"));
+	
 	// Store a reference to the Cue asset - we'll need it later.
 	propellerAudioCue = propellerCue.Object;
 
@@ -157,19 +156,15 @@ AHackflightSimVehicle::AHackflightSimVehicle()
 
 	// I want the sound to come from slighty in front of the pawn.
 	propellerAudioComponent->SetRelativeLocation(FVector(100.0f, 0.0f, 0.0f));
-
-	*/
 }
 
 void AHackflightSimVehicle::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
-	/*
 	if (propellerAudioCue->IsValidLowLevelFast()) {
 		propellerAudioComponent->SetSound(propellerAudioCue);
 	}
-	*/
 }
 
 // Called when the game starts or when spawned
@@ -177,7 +172,7 @@ void AHackflightSimVehicle::BeginPlay()
 {
 	Super::BeginPlay();
 
-	/*
+	
 
 	// Note because the Cue Asset is set to loop the sound,
 	// once we start playing the sound, it will play 
@@ -191,7 +186,7 @@ void AHackflightSimVehicle::BeginPlay()
 
 	// Or you can start playing the sound immediately.
 	propellerAudioComponent->Play();
-	*/
+	
 }
 void AHackflightSimVehicle::Tick(float deltaSeconds)
 {
