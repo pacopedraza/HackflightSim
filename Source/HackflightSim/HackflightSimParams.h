@@ -20,8 +20,8 @@ along with HackflightSim.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-// Arbitrary
-static const float PARAM_PROP_SPEED = 40.f;
+// Arbitrary prop-rotation speed scaleup
+static const float PARAM_PROP_SPEED = 60.f;
 
 // Distance, elevation for chase/follow cameras
 static const float PARAM_CAM_DISTANCE  = 60.f;
@@ -33,6 +33,6 @@ static const float PARAM_MOTOR_FRONT_X = +3.7f;
 static const float PARAM_MOTOR_RIGHT_Y = +2.8f;
 static const float PARAM_MOTOR_LEFT_Y  = -4.7f;
 
-// Controls duration and extent of bounce-back on collision
+// Duration and extent of bounce-back on collision
 static const float PARAM_BOUNCEBACK_SECONDS = 2.0f;
 static const float PARAM_BOUNCEBACK_FORCE = 0.25f;
