@@ -141,10 +141,6 @@ private:
 	FVector initialLocation;
 	FRotator initialRotation;
 
-	// Controls duration and extent of bounce-back on collision
-	const float BOUNCEBACK_SECONDS = 2.0f;
-	const float BOUNCEBACK_FORCE = 0.25f;
-
 public:
 
 	FORCEINLINE class UStaticMeshComponent* GetVehicleMesh() const { return VehicleMesh; }
