@@ -172,8 +172,6 @@ void AHackflightSimVehicle::BeginPlay()
 {
 	Super::BeginPlay();
 
-	
-
 	// Note because the Cue Asset is set to loop the sound,
 	// once we start playing the sound, it will play 
 	// continiously...
@@ -192,9 +190,6 @@ void AHackflightSimVehicle::Tick(float deltaSeconds)
 {
 	// Call any parent class Tick implementation
 	Super::Tick(deltaSeconds);
-
-	// Modulate the pitch of the propeller sound (pitch as in frequency, not pitch/roll/yaw)
-	//propellerAudioComponent->SetFloatParameter(FName("pitch"), propRpm);
 
 	// Spacebar cycles through cameras
 	if (GetWorld()->GetFirstPlayerController()->GetInputKeyTimeDown(FKey("Spacebar")) > 0) {
@@ -240,9 +235,15 @@ void AHackflightSimVehicle::Tick(float deltaSeconds)
 		board.simGetVehicleState(&vehicleState, motorValues);
 	}
 
-	// Spin props
-	for (int k = 0; k<4; ++k)
+	// Spin props, accumulating average motor value
+	float motorSum = 0;
+	for (int k = 0; k < 4; ++k) {
 		motors[k]->rotate(motorValues[k]);
+		motorSum += motorValues[k];
+	}
+
+	// Modulate the pitch of the propeller sound (pitch as in frequency, not pitch/roll/yaw)
+	propellerAudioComponent->SetFloatParameter(FName("pitch"), motorSum / 4);
 
 	// Rotate copter in simulation, after converting radians to degrees
 	AddActorLocalRotation(deltaSeconds * FRotator(vehicleState.orientation.derivs[1], vehicleState.orientation.derivs[2], vehicleState.orientation.derivs[0]) * (180 / M_PI));
