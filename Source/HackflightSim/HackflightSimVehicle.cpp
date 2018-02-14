@@ -242,8 +242,9 @@ void AHackflightSimVehicle::Tick(float deltaSeconds)
 		motorSum += motorValues[k];
 	}
 
-	// Modulate the pitch of the propeller sound (pitch as in frequency, not pitch/roll/yaw)
+	// Modulate the pitch and voume of the propeller sound
 	propellerAudioComponent->SetFloatParameter(FName("pitch"), motorSum / 4);
+	propellerAudioComponent->SetFloatParameter(FName("volume"), motorSum / 4);
 
 	// Rotate copter in simulation, after converting radians to degrees
 	AddActorLocalRotation(deltaSeconds * FRotator(vehicleState.orientation.derivs[1], vehicleState.orientation.derivs[2], vehicleState.orientation.derivs[0]) * (180 / M_PI));
