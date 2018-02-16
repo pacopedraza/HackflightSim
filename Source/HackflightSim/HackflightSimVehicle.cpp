@@ -28,6 +28,7 @@ along with HackflightSim.  If not, see <http://www.gnu.org/licenses/>.
 #include "Components/StaticMeshComponent.h"
 #include "Components/InputComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "GameFramework/RotatingMovementComponent.h"
 #include "Engine/World.h"
 #include "Engine/StaticMesh.h"
 #include "Engine/Engine.h"
@@ -57,7 +58,7 @@ hf::Hackflight hackflight;
 
 // PID tuning
 hf::Stabilizer stabilizer = hf::Stabilizer(
-	0.10f,      // Level P
+	0,//0.10f,      // Level P
 	.00001f,     // Gyro cyclic P
 	0,			// Gyro cyclic I
 	0,			// Gyro cyclic D
@@ -85,7 +86,7 @@ AHackflightSimVehicle::AHackflightSimVehicle()
 	VehicleMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("VehicleMesh"));
 	VehicleMesh->SetStaticMesh(VehicleConstructorStatics.VehicleMesh.Get());	// Set static mesh
 	RootComponent = VehicleMesh;
-    
+
 	// Create the follow camera
     createCameraWithSpringArm( L"FollowCamera", &FollowCamera, L"FollowCameraSpringArm", 
             &FollowCameraSpringArm, PARAM_CAM_DISTANCE, PARAM_CAM_ELEVATION, 0, true);
@@ -173,7 +174,6 @@ void AHackflightSimVehicle::BeginPlay()
 
 	// Or you can start playing the sound immediately.
 	propellerAudioComponent->Play();
-	
 }
 void AHackflightSimVehicle::Tick(float deltaSeconds)
 {
@@ -330,6 +330,12 @@ void AHackflightSimVehicle::createCameraWithSpringArm(
     (*springArm)->SetRelativeLocation(FVector(0.f, 0.f, elevation));
     (*springArm)->bUsePawnControlRotation = usePawnControlRotation; 
     (*springArm)->SetWorldRotation(FRotator(pitch, 0.f, 0.f));
+
+	/* XXX maybe use camera lag for a true third-person view at some point
+	(*springArm)->bEnableCameraLag = true;
+	(*springArm)->CameraLagSpeed = 10;
+	(*springArm)->CameraRotationLagSpeed = 10;
+	(*springArm)->CameraLagMaxDistance = 20;*/
 
     *camera = CreateDefaultSubobject<UCameraComponent>(cameraName);
     (*camera)->SetupAttachment(*springArm, USpringArmComponent::SocketName); 
