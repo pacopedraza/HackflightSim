@@ -52,13 +52,6 @@ hf::Hackflight hackflight;
 #include <receivers/sim/linux.hpp>
 #endif
 
-// Additional PID controllers
-#include <pid_controllers/altitude_hold.hpp>
-hf::AltitudeHold altitudeHold = hf::AltitudeHold(0.04f, 0.50f, 6.00f);
-
-#include <pid_controllers/position_hold.hpp>
-hf::PositionHold positionHold = hf::PositionHold(0.f, 0.f, 0.0f);
-
 // Board simulation
 #include "HackflightSimBoard.hpp"
 
@@ -117,10 +110,6 @@ AHackflightSimVehicle::AHackflightSimVehicle()
 	motors[1] = new HackflightSimMotor(this, VehicleMesh, PARAM_MOTOR_FRONT_X, PARAM_MOTOR_RIGHT_Y, -1, 1);
 	motors[2] = new HackflightSimMotor(this, VehicleMesh, PARAM_MOTOR_REAR_X, PARAM_MOTOR_LEFT_Y,   -1, 2);
 	motors[3] = new HackflightSimMotor(this, VehicleMesh, PARAM_MOTOR_FRONT_X, PARAM_MOTOR_LEFT_Y,  +1, 3);
-
-	// Add altithude-hold and position-hold PID controllers to Hackflight firmware
-	hackflight.addPidController(&altitudeHold);
-	hackflight.addPidController(&positionHold);
 
 	// Start Hackflight firmware
 	hackflight.init(&board, new hf::Controller(), &stabilizer);
@@ -232,7 +221,7 @@ void AHackflightSimVehicle::Tick(float deltaSeconds)
 		hackflight.update();
 
 		// Get current vehicle state from board
-		board.simGetVehicleState(gyroRates, motorValues);
+		board.simGetVehicleState(gyroRates, translationRates, motorValues);
 	}
 
 	// Spin props, accumulating average motor value
