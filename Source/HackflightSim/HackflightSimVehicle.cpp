@@ -231,8 +231,8 @@ void AHackflightSimVehicle::Tick(float deltaSeconds)
 		// Update our flight controller
 		hackflight.update();
 
-		// Get current vehicle state and motor values from board
-		board.simGetVehicleState(&vehicleState, motorValues);
+		// Get current vehicle state from board
+		board.simGetVehicleState(gyroRates, motorValues);
 	}
 
 	// Spin props, accumulating average motor value
@@ -247,10 +247,10 @@ void AHackflightSimVehicle::Tick(float deltaSeconds)
 	propellerAudioComponent->SetFloatParameter(FName("volume"), motorSum / 4);
 
 	// Rotate copter in simulation, after converting radians to degrees
-	AddActorLocalRotation(deltaSeconds * FRotator(vehicleState.orientation.derivs[1], vehicleState.orientation.derivs[2], vehicleState.orientation.derivs[0]) * (180 / M_PI));
+	AddActorLocalRotation(deltaSeconds * FRotator(gyroRates[1], gyroRates[2], gyroRates[0]) * (180 / M_PI));
 
 	// Move copter (UE4 uses cm, so multiply by 100 first)
-	AddActorLocalOffset(100 * deltaSeconds*FVector(vehicleState.position.derivs[0], vehicleState.position.derivs[1], vehicleState.position.derivs[2]), true);
+	AddActorLocalOffset(100 * deltaSeconds*FVector(translationRates[0], translationRates[1], translationRates[2]), true);
 }
 
 // Collision handling
@@ -272,7 +272,7 @@ void AHackflightSimVehicle::NotifyHit(
 
 		// Set movement trajectory to inverse of current trajectory
 		for (uint8_t k = 0; k < 3; ++k) {
-			vehicleState.position.derivs[k] *= -PARAM_BOUNCEBACK_FORCE;
+			translationRates[k] *= -PARAM_BOUNCEBACK_FORCE;
 		}
 
 		// Start collision countdown

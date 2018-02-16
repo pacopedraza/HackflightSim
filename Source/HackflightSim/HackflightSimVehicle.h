@@ -113,7 +113,8 @@ private:
 	} collision_state_t;
 
 	// Everything we should need to display the vehicle
-	vehicle_state_t vehicleState;
+    float gyroRates[3];
+    float translationRates[3];
 	HackflightSimMotor * motors[4];
 
 	// Creates a camera and associated spring-arm
