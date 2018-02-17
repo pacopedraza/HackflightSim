@@ -117,6 +117,9 @@ private:
     float translationRates[3];
 	HackflightSimMotor * motors[4];
 
+	// Intializes camera and headless mode
+	void initCamera();
+
 	// Creates a camera and associated spring-arm
     void createCameraWithSpringArm(
             const wchar_t * cameraName, 

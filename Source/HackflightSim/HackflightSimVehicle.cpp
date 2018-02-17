@@ -52,6 +52,7 @@ hf::Hackflight hackflight;
 #else
 #include <receivers/sim/linux.hpp>
 #endif
+hf::Controller controller;
 
 // Board simulation
 #include "HackflightSimBoard.hpp"
@@ -99,12 +100,6 @@ AHackflightSimVehicle::AHackflightSimVehicle()
     createCameraWithSpringArm( L"FpvCamera", &FpvCamera, L"FpvCameraSpringArm", 
             &FpvCameraSpringArm, 0, 0, false);
 
-	// Start with the follow camera activated
-	FollowCamera->Activate();
-	ChaseCamera->Deactivate();
-	FpvCamera->Deactivate();
-	activeCameraIndex = 0;
-	keyDownTime = 0;
 
 	// Simulate four motors at specified positions, with specified rotation directions
 	motors[0] = new HackflightSimMotor(this, VehicleMesh, PARAM_MOTOR_REAR_X, PARAM_MOTOR_RIGHT_Y,  +1, 0);
@@ -113,7 +108,7 @@ AHackflightSimVehicle::AHackflightSimVehicle()
 	motors[3] = new HackflightSimMotor(this, VehicleMesh, PARAM_MOTOR_FRONT_X, PARAM_MOTOR_LEFT_Y,  +1, 3);
 
 	// Start Hackflight firmware
-	hackflight.init(&board, new hf::Controller(), &stabilizer);
+	hackflight.init(&board, &controller, &stabilizer);
 	
 	// Store initial position, orientation for recovery after collision
 	initialLocation = GetActorLocation();
@@ -122,6 +117,7 @@ AHackflightSimVehicle::AHackflightSimVehicle()
 	// No collision yet
 	collisionState = NORMAL;
 
+	initCamera();
 
 	// http://bendemott.blogspot.com/2016/10/unreal-4-playing-sound-from-c-with.html 
 
@@ -161,6 +157,9 @@ void AHackflightSimVehicle::PostInitializeComponents()
 void AHackflightSimVehicle::BeginPlay()
 {
 	Super::BeginPlay();
+
+	// Start with the follow camera activated, headless mode
+	initCamera();
 
 	// Note because the Cue Asset is set to loop the sound,
 	// once we start playing the sound, it will play 
@@ -222,8 +221,6 @@ void AHackflightSimVehicle::Tick(float deltaSeconds)
 
 		// Get current vehicle state from board
 		board.simGetVehicleState(gyroRates, translationRates, motorValues);
-
-		hf::Debug::printf("%f", translationRates[2]);
 	}
 
 	// Spin props, accumulating average motor value
@@ -238,10 +235,10 @@ void AHackflightSimVehicle::Tick(float deltaSeconds)
 	propellerAudioComponent->SetFloatParameter(FName("volume"), motorSum / 4);
 
 	// Rotate copter in simulation, after converting radians to degrees
-	AddActorWorldRotation(deltaSeconds * FRotator(gyroRates[1], gyroRates[2], gyroRates[0]) * (180 / M_PI));
+	AddActorLocalRotation(deltaSeconds * FRotator(gyroRates[1], gyroRates[2], gyroRates[0]) * (180 / M_PI));
 
 	// Move copter (UE4 uses cm, so multiply by 100 first)
-	AddActorWorldOffset(100 * deltaSeconds*FVector(translationRates[0], translationRates[1], translationRates[2]), true);
+	AddActorLocalOffset(100 * deltaSeconds*FVector(translationRates[0], translationRates[1], translationRates[2]), true);
 }
 
 // Collision handling
@@ -303,16 +300,19 @@ void AHackflightSimVehicle::cycleCamera(void)
             FollowCamera->Deactivate();
             ChaseCamera->Activate();
             FpvCamera->Deactivate();
+			controller.headless = false;
             break;
         case 2:
             FollowCamera->Deactivate();
             ChaseCamera->Deactivate();
             FpvCamera->Activate();
+			controller.headless = false;
             break;
         default:
             FollowCamera->Activate();
             ChaseCamera->Deactivate();
             FpvCamera->Deactivate();
+			controller.headless = true;
     }
 }
 
@@ -340,4 +340,16 @@ void AHackflightSimVehicle::createCameraWithSpringArm(
     *camera = CreateDefaultSubobject<UCameraComponent>(cameraName);
     (*camera)->SetupAttachment(*springArm, USpringArmComponent::SocketName); 
     (*camera)->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
+}
+
+void AHackflightSimVehicle::initCamera()
+{
+
+	// Start with the follow camera activated, headless mode
+	FollowCamera->Activate();
+	ChaseCamera->Deactivate();
+	FpvCamera->Deactivate();
+	activeCameraIndex = 0;
+	controller.headless = true;
+	keyDownTime = 0;
 }
