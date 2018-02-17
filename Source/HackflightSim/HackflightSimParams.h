@@ -34,5 +34,5 @@ static const float PARAM_MOTOR_RIGHT_Y = +2.8f;
 static const float PARAM_MOTOR_LEFT_Y  = -4.7f;
 
 // Duration and extent of bounce-back on collision
-static const float PARAM_BOUNCEBACK_SECONDS = 2.0f;
-static const float PARAM_BOUNCEBACK_FORCE = 0.25f;
+static const float PARAM_BOUNCEBACK_SECONDS = 1.0f;
+static const float PARAM_BOUNCEBACK_FORCE = 1.0f;
