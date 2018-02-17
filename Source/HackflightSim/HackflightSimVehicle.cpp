@@ -190,18 +190,14 @@ void AHackflightSimVehicle::Tick(float deltaSeconds)
 		keyDownTime = 0;
 	}
 
-	collision_state_t retval = NORMAL;
-
 	if (collidingSeconds > 1) {
 		collidingSeconds -= deltaSeconds;
-		retval = BOUNCING;
+		collisionState = BOUNCING;
 	}
 
 	else if (collidingSeconds > 0) {
-		retval = FALLING;
+		collisionState = FALLING;
 	}
-
-	collisionState = retval;
 
 	float motorValues[4] = { 0.5f, 0.5f, 0.5f, 0.5f };
 
