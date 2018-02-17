@@ -135,7 +135,11 @@ private:
 	float keyDownTime;
 	void cycleCamera(void);
 
+	// NORMAL, BOUNCING, FALLING
 	collision_state_t collisionState;
+
+	// Resets everything after collisions
+	void resetAfterCollision(void);
 
 	// Counts down time during which simulation is taken over by collision recovery
 	float collidingSeconds;

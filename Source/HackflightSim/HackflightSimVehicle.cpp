@@ -254,35 +254,52 @@ void AHackflightSimVehicle::NotifyHit(
 
 	case NORMAL:
 
-		// Set movement trajectory to inverse of current trajectory
-		for (uint8_t k = 0; k < 3; ++k) {
-			translationRates[k] *= -PARAM_BOUNCEBACK_FORCE;
+		// Crash above ground; start falling
+		if (GetActorLocation().Z > 0) {
+
+			// Set movement trajectory to inverse of current trajectory
+			for (uint8_t k = 0; k < 3; ++k) {
+				translationRates[k] *= -PARAM_BOUNCEBACK_FORCE;
+			}
+
+			// Start collision countdown
+			collidingSeconds = PARAM_BOUNCEBACK_SECONDS;
+
+			collisionState = FALLING;
 		}
 
-		// Start collision countdown
-		collidingSeconds = PARAM_BOUNCEBACK_SECONDS;	
+		// Crash on ground; reset
+		else {
+
+			resetAfterCollision();
+		}
 
 		break;
 
 	case FALLING:
 
-		// Return control of physics to firmware
-		VehicleMesh->SetSimulatePhysics(false);
-
-		// Start Hackflight firmware
-		hackflight.init(&board, new hf::Controller(), &stabilizer);
-
-		// No collision
-		collisionState = NORMAL;
-		collidingSeconds = 0;
-
-		// Return vehicle to its starting position and orientation
-		SetActorLocation(initialLocation);
-		SetActorRotation(initialRotation);
+		resetAfterCollision();
 
 		break;
 	}
 	
+}
+
+void AHackflightSimVehicle::resetAfterCollision(void)
+{
+	// Return control of physics to firmware
+	VehicleMesh->SetSimulatePhysics(false);
+
+	// Start Hackflight firmware
+	hackflight.init(&board, new hf::Controller(), &stabilizer);
+
+	// No collision
+	collisionState = NORMAL;
+	collidingSeconds = 0;
+
+	// Return vehicle to its starting position and orientation
+	SetActorLocation(initialLocation);
+	SetActorRotation(initialRotation);
 }
 
 // Cycles among our three cameras
