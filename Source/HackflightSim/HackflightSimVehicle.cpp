@@ -89,15 +89,15 @@ AHackflightSimVehicle::AHackflightSimVehicle()
 
 	// Create the follow camera
     createCameraWithSpringArm( L"FollowCamera", &FollowCamera, L"FollowCameraSpringArm", 
-            &FollowCameraSpringArm, PARAM_CAM_DISTANCE, PARAM_CAM_ELEVATION, 0, true);
+            &FollowCameraSpringArm, PARAM_CAM_DISTANCE, PARAM_CAM_ELEVATION, true);
 
 	// Create the chase camera
     createCameraWithSpringArm( L"ChaseCamera", &ChaseCamera, L"ChaseCameraSpringArm", 
-            &ChaseCameraSpringArm, PARAM_CAM_DISTANCE, PARAM_CAM_ELEVATION, 0, false);
+            &ChaseCameraSpringArm, PARAM_CAM_DISTANCE, PARAM_CAM_ELEVATION, false);
 
 	// Create the FPV camera
     createCameraWithSpringArm( L"FpvCamera", &FpvCamera, L"FpvCameraSpringArm", 
-            &FpvCameraSpringArm, 0, 0, 0, false);
+            &FpvCameraSpringArm, 0, 0, false);
 
 	// Start with the follow camera activated
 	FollowCamera->Activate();
@@ -222,6 +222,8 @@ void AHackflightSimVehicle::Tick(float deltaSeconds)
 
 		// Get current vehicle state from board
 		board.simGetVehicleState(gyroRates, translationRates, motorValues);
+
+		hf::Debug::printf("%f", translationRates[2]);
 	}
 
 	// Spin props, accumulating average motor value
@@ -236,10 +238,10 @@ void AHackflightSimVehicle::Tick(float deltaSeconds)
 	propellerAudioComponent->SetFloatParameter(FName("volume"), motorSum / 4);
 
 	// Rotate copter in simulation, after converting radians to degrees
-	AddActorLocalRotation(deltaSeconds * FRotator(gyroRates[1], gyroRates[2], gyroRates[0]) * (180 / M_PI));
+	AddActorWorldRotation(deltaSeconds * FRotator(gyroRates[1], gyroRates[2], gyroRates[0]) * (180 / M_PI));
 
 	// Move copter (UE4 uses cm, so multiply by 100 first)
-	AddActorLocalOffset(100 * deltaSeconds*FVector(translationRates[0], translationRates[1], translationRates[2]), true);
+	AddActorWorldOffset(100 * deltaSeconds*FVector(translationRates[0], translationRates[1], translationRates[2]), true);
 }
 
 // Collision handling
@@ -321,7 +323,6 @@ void AHackflightSimVehicle::createCameraWithSpringArm(
         USpringArmComponent **springArm,
         float distance,
         float elevation,
-        float pitch,
         bool usePawnControlRotation)
 {
     *springArm = CreateDefaultSubobject<USpringArmComponent>(springArmName);
@@ -329,7 +330,6 @@ void AHackflightSimVehicle::createCameraWithSpringArm(
     (*springArm)->TargetArmLength = distance;
     (*springArm)->SetRelativeLocation(FVector(0.f, 0.f, elevation));
     (*springArm)->bUsePawnControlRotation = usePawnControlRotation; 
-    (*springArm)->SetWorldRotation(FRotator(pitch, 0.f, 0.f));
 
 	/* XXX maybe use camera lag for a true third-person view at some point
 	(*springArm)->bEnableCameraLag = true;

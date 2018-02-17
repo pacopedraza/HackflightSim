@@ -125,7 +125,6 @@ private:
             USpringArmComponent **springArm,
             float distance,
             float elevation,
-            float pitch,
             bool usePawnControlRotation);
 
 	// Helps us cycle among cameras
